@@ -1,5 +1,3 @@
-const TelegramBot = require('node-telegram-bot-api');
-
 function displayMenu(bot, msg) {
   const chatId = msg.chat.id;
   const options = {

@@ -44,7 +44,7 @@ function handleUserQuestion(bot, answer, listenerId) {
   bot.removeTextListener(listenerId);
 
   // Отправка подтверждения пользователю с возможностью отмены
-  bot.sendMessage(chatId, 'Ваш вопрос был отправлен. Ожидайте ответа.', {
+  bot.sendMessage(chatId, 'Ваш запрос был отправлен. Ожидайте ответа.', {
       reply_markup: JSON.stringify({
           inline_keyboard: [
               [{ text: 'Отменяю вопрос - никого не зовите!', callback_data: 'cancel_question' }]

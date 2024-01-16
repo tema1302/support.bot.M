@@ -1,9 +1,10 @@
 const supportHandler = require('./supportHandler');
+const connectionHandler = require('./connectionHandler');
 
 function handleMenuAction(bot, action, msg) {
     switch (action) {
         case 'connect':
-            displayConnectionOptions(bot, msg);
+            connectionHandler.displayConnectionOptions(bot, msg);
             break;
         case 'support':
             supportHandler.handleSupportRequest(bot, msg);
@@ -20,21 +21,15 @@ function handleMenuAction(bot, action, msg) {
         case 'cancel_question':
             supportHandler.handleCancelQuestion(bot, msg);
             break;
+        case 'legal_entity':
+            connectionHandler.requestLegalEntityInfo(bot, msg);
+            break;
+        case 'individual':
+            connectionHandler.requestIndividualInfo(bot, msg);
+            break;
     }
 }
 
-function displayConnectionOptions(bot, msg) {
-    const chatId = msg.chat.id;
-    const options = {
-        reply_markup: JSON.stringify({
-            inline_keyboard: [
-                [{ text: 'Юридическое лицо', callback_data: 'legal_entity' }],
-                [{ text: 'Физическое лицо', callback_data: 'individual' }]
-            ]
-        })
-    };
-    bot.sendMessage(chatId, 'Выберите тип клиента:', options);
-}
 
 function handleUnsubscribe(bot, msg) {
     const chatId = msg.chat.id;
