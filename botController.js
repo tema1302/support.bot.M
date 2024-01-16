@@ -1,5 +1,6 @@
 const languageHandler = require('./languageHandler');
 const menuHandler = require('./menuHandler');
+const commonActions = require('./commonActions');
 
 function initialize(bot) {
     bot.onText(/\/start/, (msg) => {
@@ -11,7 +12,7 @@ function initialize(bot) {
         const msg = callbackQuery.message;
 
         if (action === 'russian') {
-            menuHandler.displayMenu(bot, msg);
+            commonActions.displayMenu(bot, msg);
         } else {
             menuHandler.handleMenuAction(bot, action, msg);
         }
