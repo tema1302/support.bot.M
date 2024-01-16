@@ -6,6 +6,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 const menuHandler = require('./menuHandler');
 const supportHandler = require('./supportHandler');
+const connectionHandler = require('./connectionHandler');
 
 const commands = [
   {
@@ -35,7 +36,7 @@ bot.setMyCommands(commands);
 // Обработка команды /connect
 bot.onText(/\/connect/, (msg) => {
   console.log('lalala');
-  menuHandler.displayConnectionOptions(bot, msg);
+  connectionHandler.displayConnectionOptions(bot, msg);
 });
 
 // Обработка команды /support
@@ -50,6 +51,7 @@ bot.onText(/\/channel/, (msg) => {
 
 // Обработка команды /unsubscribe
 bot.onText(/\/unsubscribe/, (msg) => {
+  console.log(menuHandler);
   menuHandler.handleUnsubscribe(bot, msg);
 });
 

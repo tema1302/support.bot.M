@@ -43,4 +43,4 @@ function handleChannelInfo(bot, msg) {
     bot.sendMessage(chatId, 'Посетите наш телеграм-канал: https://t.me/galstelecom');
 }
 
-module.exports = { handleMenuAction };
+module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo };
