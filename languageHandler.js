@@ -1,9 +1,9 @@
 function displayLanguageOptions(bot, msg) {
     const chatId = msg.chat.id;
-    const options = {
-        reply_markup: JSON.stringify({
+    const options = { // Опции для метода отправки сообщения
+        reply_markup: JSON.stringify({ // JSON-строка для настройки клавиатуры
             inline_keyboard: [
-                [{ text: 'Узбекский', callback_data: 'uzbek' }],
+                [{ text: 'o’zbek tili', callback_data: 'uzbek' }],
                 [{ text: 'Русский', callback_data: 'russian' }]
             ]
         })

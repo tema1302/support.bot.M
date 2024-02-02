@@ -1,5 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
-const botController = require('./botController');
+const languageSelection = require('./languageSelection');
 
 const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M'; // Замените на ваш токен
 const bot = new TelegramBot(token, { polling: true });
@@ -35,7 +35,6 @@ bot.setMyCommands(commands);
 
 // Обработка команды /connect
 bot.onText(/\/connect/, (msg) => {
-  console.log('lalala');
   connectionHandler.displayConnectionOptions(bot, msg);
 });
 
@@ -57,4 +56,4 @@ bot.onText(/\/unsubscribe/, (msg) => {
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
-botController.initialize(bot);
+languageSelection.initialize(bot);

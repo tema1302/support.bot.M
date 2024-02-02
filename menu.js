@@ -1,0 +1,22 @@
+const i18n = require('./config/i18n');
+
+console.log(i18n.__('connect'));
+
+function displayMenu(bot, msg) {
+    const chatId = msg.chat.id;
+    const options = {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: i18n.__('connect'), callback_data: 'connect' }],
+                [{ text: i18n.__('support'), callback_data: 'support' }],
+                [{ text: i18n.__('channel'), callback_data: 'channel' }],
+                [{ text: i18n.__('unsubscribe'), callback_data: 'unsubscribe' }]
+            ]
+        })
+    };
+    bot.sendMessage(chatId, i18n.__('choose_option'), options);
+}
+
+module.exports = {
+    displayMenu,
+};

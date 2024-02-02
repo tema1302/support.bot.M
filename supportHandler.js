@@ -1,7 +1,7 @@
 let userQuestionContext = {};
 let userStates = {}; // Хранит состояние для каждого пользователя
 
-const commonActions = require('./commonActions');
+const menu = require('./menu');
 
 function handleSupportRequest(bot, msg) {
   const chatId = msg.chat.id;
@@ -70,7 +70,7 @@ function handleCancelQuestion(bot, msg) {
     userStates[chatId] = 'IDLE';
 
     console.log(userQuestionContext);
-    commonActions.displayMenu(bot, msg);
+    menu.displayMenu(bot, msg);
 }
 
 module.exports = { handleSupportRequest, promptForQuestion, handleCancelQuestion };

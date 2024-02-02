@@ -1,0 +1,7 @@
+{
+	"connect": "connect",
+	"support": "support",
+	"channel": "channel",
+	"unsubscribe": "unsubscribe",
+	"choose_option": "choose_option"
+}

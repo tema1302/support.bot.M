@@ -1,0 +1,14 @@
+{
+  "connect": "Ulanish uchun ariza",
+  "support": "Texnik yordam",
+  "channel": "Telegram-kanal",
+  "unsubscribe": "Botdan obuna bo'lishni bekor qilish",
+  "choose_option": "Variantni tanlang:",
+  "choose_client_type": "Mijoz turi tanlang:",
+  "legal_entity_option": "Yuridik shaxs",
+  "individual_option": "Jismoniy shaxs",
+  "request_sent": "Sizning so'rovingiz yuborildi. Javob kutib turing.",
+  "connection_request_from": "Ulanish so'rovi ",
+  "enter_company_info": "Kompaniya nomini va telefon raqamini javob xabarida kiriting",
+  "enter_phone_number": "Telefon raqamingizni javob xabarida kiriting"
+}
