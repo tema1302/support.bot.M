@@ -23,15 +23,6 @@ function initialize(bot) {
             default:
                 menuHandler.handleMenuAction(bot, action, msg);
         }
-        // if (action === 'russian') {
-        //     i18n.setLocale('ru');
-        //     menu.displayMenu(bot, msg);
-        // } else if (action === 'uzbek') {
-        //     i18n.setLocale('uz');
-        //     menu.displayMenu(bot, msg);
-        // } else {
-        //     menuHandler.handleMenuAction(bot, action, msg);
-        // }
     });
 }
 

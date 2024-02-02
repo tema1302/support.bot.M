@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const languageSelection = require('./languageSelection');
+const i18n = require('./config/i18n');
 
 const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M'; // Замените на ваш токен
 const bot = new TelegramBot(token, { polling: true });
@@ -15,19 +16,27 @@ const commands = [
   },
   {
       command: "connect",
-      description: "Заявка на подключение"
+      description: i18n.__('connect')
   },
   {
       command: "support",
-      description: "Техническая поддержка"
+      description: i18n.__('support')
   },
   {
       command: "channel",
-      description: "Информация о телеграм-канале"
+      description: i18n.__('channel')
+  },
+  {
+      command: "about",
+      description: i18n.__('about_us')
+  },
+  {
+      command: "promotions",
+      description: i18n.__('promotions')
   },
   {
       command: "unsubscribe",
-      description: "Отписаться от рассылки"
+      description: i18n.__('unsubscribe')
   }
 ];
 
@@ -46,6 +55,14 @@ bot.onText(/\/support/, (msg) => {
 // Обработка команды /channel
 bot.onText(/\/channel/, (msg) => {
   menuHandler.handleChannelInfo(bot, msg);
+});
+
+bot.onText(/\/about/, (msg) => {
+  menuHandler.displayAboutInfo(bot, msg);
+});
+
+bot.onText(/\/promotions/, (msg) => {
+  menuHandler.displayPromotions(bot, msg);
 });
 
 // Обработка команды /unsubscribe

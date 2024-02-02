@@ -1,3 +1,5 @@
+const i18n = require('./config/i18n');
+
 let connectionRequests = {}; // Хранит запросы на подключение
 
 function displayConnectionOptions(bot, msg) {
@@ -5,8 +7,10 @@ function displayConnectionOptions(bot, msg) {
   const options = {
       reply_markup: JSON.stringify({
           inline_keyboard: [
+            // отрабатывает в menuHandler.js
               [{ text: i18n.__('legal_entity_option'), callback_data: 'legal_entity' }],
-              [{ text: i18n.__('individual_option'), callback_data: 'individual' }]
+              [{ text: i18n.__('individual_option'), callback_data: 'individual' }],
+              [{ text: i18n.__('back'), callback_data: 'back_to_menu' }],
           ]
       })
   };
@@ -52,8 +56,6 @@ function handleConnectionRequestInput(bot, answer, listenerId) {
   console.log(client);
   // Пересылка сообщения в групповой чат
   bot.sendMessage(GROUP_CHAT_ID, `${i18n.__('connection_request_from')} ${client} @${answer.from.username}: "${answer.text}"`);
-
-  // Удаление обработчика после получения ответа
   bot.removeTextListener(listenerId);
 
   // Отправка подтверждения пользователю с возможностью отмены
