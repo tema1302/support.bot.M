@@ -9,9 +9,16 @@ function initialize(bot) {
         languageHandler.displayLanguageOptions(bot, msg);
     });
 
+    // Регистрация обработчика текстовых сообщений для сценария поддержки
+    bot.on('message', (msg) => {
+            supportHandler.handleUserInput(bot, msg);
+    });
+
     bot.on('callback_query', (callbackQuery) => {
         const action = callbackQuery.data;
         const msg = callbackQuery.message;
+        const chatId = msg.chat.id;
+
         switch (action) {
             case 'russian': 
                 i18n.setLocale('ru');
@@ -23,7 +30,10 @@ function initialize(bot) {
                 break;
             // обработка других действий callbackQuery
             default:
+                console.log('support');
+                supportHandler.handleCallbackQuery(bot, callbackQuery);
                 menuHandler.handleMenuAction(bot, action, msg);
+                break;
         }
     });
 }

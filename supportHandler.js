@@ -19,48 +19,28 @@ const Steps = {
     MESSAGE_WAS_SENT: 8,
 };
 
+
 function startSupportScenario(bot, msg) {
-    console.log('startSupportScenario');
     const chatId = msg.chat.id;
-    userStates[chatId] = Steps.AWAITING_LOGIN; // Начальное состояние сценария поддержки
+    userStates[chatId] = Steps.IDLE;
+
     userInfo[chatId] = {};
-
-    console.log('userStates', userStates);
-    // Динамическая регистрация обработчика текстовых сообщений для сценария поддержки
-    console.log('регистрируем обработчик текстовых сообщений');
-    bot.on('message', (msg) => {
-        if (userStates[msg.chat.id] && userStates[msg.chat.id] !== Steps.IDLE) {
-            handleUserInput(bot, msg);
-        }
-    });
-
-    // Регистрация обработчика callback_query для сценария поддержки
-    console.log('регистрируем обработчик callback_query');
-    bot.on('callback_query', (callbackQuery) => {
-        console.log('обработчик callback_query');
-        console.log('userStates', userStates);
-        const chatId = callbackQuery.message.chat.id;
-        if (userStates[chatId]) {
-            handleCallbackQuery(bot, callbackQuery);
-        }
-    });
-    handleSupportRequest(bot, msg);
+    
+    handleSupportRequest(bot, chatId);
 }
 
 
-function handleSupportRequest(bot, msg) {
-    const chatId = msg.chat.id;
+function handleSupportRequest(bot, chatId) {
     console.log('chatId', chatId);
+    console.log('userStates[chatId]', userStates[chatId]);
     const options = {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                // [{ text: i18n.__('ask_question'), callback_data: 'ask_question' }], // Кнопка для задания вопроса -- поменять на "Введите логин"
                 [{ text: 'Написать логин', callback_data: 'write_login' }],
                 [{ text: i18n.__('forgot_login'), callback_data: 'forgot_login' }]
             ]
         })
     };
-    console.log('options', options);
     bot.sendMessage(chatId, i18n.__('click_button_below_or_write_login'), options);
 }
 
@@ -72,13 +52,13 @@ function handleUserInput(bot, msg) {
 
     const step = userStates[chatId];
     const text = msg.text;
-    console.log('step', step);
-    console.log('Steps', Steps);
-    console.log('userInfo', userInfo);
+    // выяснить, почему отображается после ввода квартиры, а не дома
+    console.log('step 1111111', step);
 
     switch (userStates[chatId]) {
         case Steps.AWAITING_LOGIN:
             updateUserInfo(chatId, 'login', text);
+            // userStates[chatId] = Steps.AWAITING_QUESTION
             proceedToNextStep(bot, chatId);
             break;
             // 3-й шаг
@@ -126,45 +106,46 @@ function handleCallbackQuery(bot, callbackQuery) {
     const msg = callbackQuery.message;
     const chatId = msg.chat.id;
     const data = callbackQuery.data; // название кнопки, которую нажал пользователь
-    // console.log('Steps in CallbackQuery', Steps);
     // Обработка кнопки "Назад"
     if (data === 'go_back') {
-        // console.log('go_back');
-        // console.log('data:' + data);
         proceedToPreviousStep(bot, chatId);
     } else {
         // Обработка других callback_data
-        // console.log('NOT go_back');
-        // console.log('отрабатываем', data);
         switch (data) {
             case 'region_yakkasaray':
                 updateUserInfo(chatId, 'region', 'Яккасарайский район');
+                proceedToNextStep(bot, chatId);
                 break;
             case 'region_mirabad':
                 updateUserInfo(chatId, 'region', 'Мирабадский район');
+                proceedToNextStep(bot, chatId);
                 break;
             case 'region_sergeli':
                 updateUserInfo(chatId, 'region', 'Сергелийский район');
+                proceedToNextStep(bot, chatId);
                 break;
             case 'region_yangihayot':
                 updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
                 console.log('userInfo[chatId]', userInfo[chatId]);
+                proceedToNextStep(bot, chatId);
                 break;
             case 'region_other':
-                updateUserInfo(chatId, 'region', data.replace('region_', ''));
+                updateUserInfo(chatId, 'region', 'Другой район');
+                proceedToNextStep(bot, chatId);
                 break;
             case 'forgot_login':
-                console.log('таки да, forgot_login');
-                // sendRegionSelection(bot, chatId);
+                userInfo[chatId] = { scenario: 'forgot_login' };
+                proceedToNextStep(bot, chatId);
                 break;
             case 'write_login':
-                userStates[chatId] = Steps.AWAITING_LOGIN;
-                bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.');
+                userInfo[chatId] = { scenario: 'write_login' };
+                proceedToNextStep(bot, chatId);
+                // bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.');
                 break;    
             // Добавьте другие случаи для обработки выбора пользователем
         }
-        proceedToNextStep(bot, chatId);
-        console.log('userStates in handleCallbackQuery', userStates);
+        
+        // console.log('userStates in handleCallbackQuery', userStates);
     }
 }
 
@@ -185,28 +166,58 @@ function sendRegionSelection(bot, chatId) {
 }
 
 
-
+// ++
 function proceedToNextStep(bot, chatId) {
-    // console.log('proceedToNextStep', userStates[chatId]);
-    if (userStates[chatId] < Steps.MESSAGE_WAS_SENT) {
-        userStates[chatId]++;
+    const scenario = userInfo[chatId].scenario;
+
+    if (scenario === 'write_login' && userStates[chatId] === Steps.AWAITING_LOGIN) {
+        console.log('write', userStates[chatId]);
+        userStates[chatId] = Steps.AWAITING_QUESTION;
+    } else if (scenario === 'forgot_login' && userStates[chatId] === Steps.IDLE) {
+        console.log('forgot', userStates[chatId]);
+        userStates[chatId] = Steps.AWAITING_REGION_SELECTION;
+    } else {
+        console.log('++', userStates[chatId]);
+        if (userStates[chatId] < Steps.MESSAGE_WAS_SENT) {
+            userStates[chatId]++;
+        }
     }
     proceedToStep(bot, chatId, userStates[chatId]);
 }
 
+// --
 function proceedToPreviousStep(bot, chatId) {
-    if (userStates[chatId] > Steps.AWAITING_LOGIN) {
-        clearFutureSteps(chatId, userStates[chatId]);
-        userStates[chatId]--;
+    const scenario = userInfo[chatId].scenario;
+
+    if (scenario === 'write_login' && userStates[chatId] === Steps.AWAITING_QUESTION) {
+        userStates[chatId] = Steps.AWAITING_LOGIN;
+    } else if (scenario === 'forgot_login' && userStates[chatId] === Steps.AWAITING_REGION_SELECTION) {
+        console.log('forgot', userStates[chatId]);
+        userStates[chatId] = Steps.IDLE;
+    } else {
+        console.log('--', userStates[chatId]);
+        if (userStates[chatId] > Steps.IDLE) {
+            clearFutureSteps(chatId, userStates[chatId]);
+            userStates[chatId]--;
+        }
     }
     proceedToStep(bot, chatId, userStates[chatId]);
 }
+
 // Переход к следующему или предыдущему шагу
 function proceedToStep(bot, chatId, step) {
-    console.log('step', step);
+    console.log('step =========', step);
+    console.log('userStates =========', userInfo[chatId]);
+    // const scenario = userInfo[chatId].scenario;
+
+    // if (scenario === 'forgot_login' && step === Steps.AWAITING_LOGIN) {
+    //     // Пропускаем шаг AWAITING_LOGIN для сценария 'forgot_login'
+    //     step++; // Переход к следующему шагу
+    // }
+
     switch (step) {
-        case Steps.AWAITING_LOGIN:
-            bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.', backButton());
+        case Steps.IDLE:
+            handleSupportRequest(bot, chatId);
             break;
         case Steps.AWAITING_REGION_SELECTION:
             sendRegionSelection(bot, chatId);
@@ -223,6 +234,9 @@ function proceedToStep(bot, chatId, step) {
         case Steps.AWAITING_PHONE:
             bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
             break;
+        case Steps.AWAITING_LOGIN:
+            bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.', backButton());
+            break;
         case Steps.AWAITING_QUESTION:
             bot.sendMessage(chatId, 'Теперь можете ввести ваш вопрос.', backButton());
             break;
@@ -230,6 +244,7 @@ function proceedToStep(bot, chatId, step) {
             sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
             bot.sendMessage(chatId, 'Ваш вопрос был отправлен.');
             userStates[chatId] = Steps.IDLE; // Возвращаем состояние в IDLE
+            console.log('userStates', userStates);
             delete userInfo[chatId]; // Очищаем данные пользователя после обработки
             break;
     }
@@ -249,10 +264,7 @@ function updateUserInfo(chatId, field, value) {
 }
 
 function sendDataToAdmins(bot, chatId) {
-    const user = userInfo[chatId];
-    console.log('sendDataToAdmins');
-    console.log('sendDataToAdmins');
-    
+    const user = userInfo[chatId];    
     let message = `Новый запрос поддержки от пользователя:\n`;
     for (const key in user) {
         message += `${key}: ${user[key]}\n`;
@@ -261,69 +273,9 @@ function sendDataToAdmins(bot, chatId) {
 }
 
 
-
-// ----------------- старая логика -----------------
-// function promptForQuestion(bot, msg) {
-//     const chatId = msg.chat.id;
-//     userStates[chatId] = 'AWAITING_LOGIN'; // Установка состояния ожидания вопроса
-
-//     bot.sendMessage(chatId, i18n.__('write_question_below'));
-
-//     // Установка обработчика для следующего текстового сообщения
-//     const listenerId = bot.on('message', (answer) => {
-//         if (answer.chat.id === chatId && answer.text && userStates[chatId] === 'AWAITING_LOGIN') {
-//             // Обработка вопроса пользователя
-//             handleUserQuestion(bot, answer, listenerId);
-//         }
-//     });
-// }
-
-// function handleUserQuestion(bot, answer, listenerId) {
-//     const chatId = answer.chat.id;
-//     const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
-
-//     userQuestionContext[chatId] = { username: answer.from.username }; // Сохранение контекста пользователя
-//     console.log(userQuestionContext);
-
-//     // Пересылка сообщения в групповой чат
-//     bot.sendMessage(GROUP_CHAT_ID, `❓ Вопрос от пользователя @${answer.from.username}: "${answer.text}"`);
-
-//     // Удаление обработчика после получения ответа
-//     bot.removeTextListener(listenerId);
-
-//     // Отправка подтверждения пользователю с возможностью отмены
-//     bot.sendMessage(chatId, i18n.__('request_sent'), {
-//         reply_markup: JSON.stringify({
-//             inline_keyboard: [
-//                 [{ text: i18n.__('cancel_question'), callback_data: 'cancel_question' }]
-//             ]
-//         })
-//     });
-
-//     userStates[chatId] = 'IDLE'; // Айдл - Бездействие системы, состояние покоя
-// }
-
-// function handleCancelQuestion(bot, msg) {
-//     const chatId = msg.chat.id;
-//     // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов прод
-    
-//     const username = userQuestionContext[chatId]?.username || 'неизвестный пользователь';
-//     // Отправка сообщения об отмене вопроса в чат администраторов
-//     bot.sendMessage(GROUP_CHAT_ID, `Пользователь @${username} отменил запрос на вызов оператора.`);
-
-//     // Отправка подтверждения пользователю
-//     bot.sendMessage(chatId, i18n.__('question_canceled'));
-
-//     // Очистка контекста пользователя и сброс его состояния
-//     delete userQuestionContext[chatId];
-//     userStates[chatId] = 'IDLE';
-
-//     console.log(userQuestionContext);
-//     menu.displayMenu(bot, msg);
-// }
-// ---------------------- конец старой логики ----------------------
-
 module.exports = {
+    Steps,
+    userStates,
     startSupportScenario,
     handleUserInput,
     handleCallbackQuery

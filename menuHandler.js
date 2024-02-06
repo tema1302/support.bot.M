@@ -23,12 +23,6 @@ function handleMenuAction(bot, action, msg) {
         case 'unsubscribe':
             handleUnsubscribe(bot, msg);
             break;
-        case 'ask_question':
-            supportHandler.promptForQuestion(bot, msg);
-            break;
-        case 'cancel_question':
-            supportHandler.handleCancelQuestion(bot, msg);
-            break;
         case 'legal_entity':
             connectionHandler.requestLegalEntityInfo(bot, msg);
             break;
