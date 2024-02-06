@@ -49,7 +49,7 @@ bot.onText(/\/connect/, (msg) => {
 
 // Обработка команды /support
 bot.onText(/\/support/, (msg) => {
-  supportHandler.handleSupportRequest(bot, msg);
+  supportHandler.startSupportScenario(bot, msg);
 });
 
 // Обработка команды /channel

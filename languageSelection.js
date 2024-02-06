@@ -1,6 +1,7 @@
 const i18n = require('./config/i18n');
 const languageHandler = require('./languageHandler');
 const menuHandler = require('./menuHandler');
+const supportHandler = require('./supportHandler');
 const menu = require('./menu');
 
 function initialize(bot) {
@@ -20,6 +21,7 @@ function initialize(bot) {
                 i18n.setLocale('uz');
                 menu.displayMenu(bot, msg);
                 break;
+            // обработка других действий callbackQuery
             default:
                 menuHandler.handleMenuAction(bot, action, msg);
         }

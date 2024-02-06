@@ -8,7 +8,8 @@ function handleMenuAction(bot, action, msg) {
             connectionHandler.displayConnectionOptions(bot, msg);
             break;
         case 'support':
-            supportHandler.handleSupportRequest(bot, msg);
+            supportHandler.startSupportScenario(bot, msg);
+            console.log('support');
             break;
         case 'channel':
             handleChannelInfo(bot, msg);
@@ -33,9 +34,6 @@ function handleMenuAction(bot, action, msg) {
             break;
         case 'individual':
             connectionHandler.requestIndividualInfo(bot, msg);
-            break;
-        case 'back_to_menu':
-            menu.displayMenu(bot, msg);
             break;
     }
 }
