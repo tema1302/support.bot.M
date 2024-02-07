@@ -2,6 +2,7 @@ const i18n = require('./config/i18n');
 const languageHandler = require('./languageHandler');
 const menuHandler = require('./menuHandler');
 const supportHandler = require('./supportHandler');
+const individual = require('./individual');
 const menu = require('./menu');
 
 function initialize(bot) {
@@ -11,13 +12,15 @@ function initialize(bot) {
 
     // Регистрация обработчика текстовых сообщений для сценария поддержки
     bot.on('message', (msg) => {
-            supportHandler.handleUserInput(bot, msg);
+        supportHandler.handleUserInput(bot, msg);
+        individual.handleUserInput(bot, msg);
     });
 
     bot.on('callback_query', (callbackQuery) => {
         const action = callbackQuery.data;
         const msg = callbackQuery.message;
-        const chatId = msg.chat.id;
+
+        console.log(callbackQuery);
 
         switch (action) {
             case 'russian': 
@@ -28,10 +31,10 @@ function initialize(bot) {
                 i18n.setLocale('uz');
                 menu.displayMenu(bot, msg);
                 break;
-            // обработка других действий callbackQuery
             default:
-                console.log('support');
+                console.log('defalut case');
                 supportHandler.handleCallbackQuery(bot, callbackQuery);
+                individual.handleCallbackQuery(bot, callbackQuery);
                 menuHandler.handleMenuAction(bot, action, msg);
                 break;
         }

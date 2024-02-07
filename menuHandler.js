@@ -1,11 +1,13 @@
 const supportHandler = require('./supportHandler');
-const connectionHandler = require('./connectionHandler');
+// const connectionHandler = require('./connectionHandler');
 const menu = require('./menu');
+const i18n = require('./config/i18n');
 
 function handleMenuAction(bot, action, msg) {
     switch (action) {
         case 'connect':
-            connectionHandler.displayConnectionOptions(bot, msg);
+            console.log('connect');
+            displayConnectionOptions(bot, msg);
             break;
         case 'support':
             supportHandler.startSupportScenario(bot, msg);
@@ -23,13 +25,28 @@ function handleMenuAction(bot, action, msg) {
         case 'unsubscribe':
             handleUnsubscribe(bot, msg);
             break;
-        case 'legal_entity':
-            connectionHandler.requestLegalEntityInfo(bot, msg);
-            break;
-        case 'individual':
-            connectionHandler.requestIndividualInfo(bot, msg);
-            break;
     }
+}
+
+
+function displayConnectionOptions(bot, msgOrChatId) {
+    console.log('displayConnectionOptions');
+    console.log(msgOrChatId);
+    // Определение chatId в зависимости от типа переданного аргумента - перегрузка
+    const chatId = typeof msgOrChatId === 'object' ? msgOrChatId.chat.id : msgOrChatId;
+
+    // const chatId = msg.chat.id;
+    const options = {
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                // отрабатывает в menuHandler.js
+                [{ text: i18n.__('legal_entity_option'), callback_data: 'legal_entity' }],
+                [{ text: i18n.__('individual_option'), callback_data: 'individual' }],
+                [{ text: i18n.__('back'), callback_data: 'back_to_menu' }],
+            ]
+        })
+    };
+    bot.sendMessage(chatId, i18n.__('choose_client_type'), options);
 }
 
 function handleUnsubscribe(bot, msg) {
@@ -56,4 +73,4 @@ function handleChannelInfo(bot, msg) {
     bot.sendMessage(chatId, 'Посетите наш телеграм-канал: https://t.me/galstelecom');
 }
 
-module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo, displayPromotions, displayAboutInfo };
+module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo, displayPromotions, displayAboutInfo, displayConnectionOptions };

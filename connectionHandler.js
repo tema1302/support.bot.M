@@ -1,9 +1,13 @@
 const i18n = require('./config/i18n');
+const individual = require('./individual');
 
 let connectionRequests = {}; // Хранит запросы на подключение
 
-function displayConnectionOptions(bot, msg) {
-  const chatId = msg.chat.id;
+function displayConnectionOptions(bot, msgOrChatId) {
+  // Определение chatId в зависимости от типа переданного аргумента - перегрузка
+  const chatId = typeof msgOrChatId === 'object' ? msgOrChatId.chat.id : msgOrChatId;
+
+  // const chatId = msg.chat.id;
   const options = {
       reply_markup: JSON.stringify({
           inline_keyboard: [

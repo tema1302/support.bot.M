@@ -44,7 +44,7 @@ bot.setMyCommands(commands);
 
 // Обработка команды /connect
 bot.onText(/\/connect/, (msg) => {
-  connectionHandler.displayConnectionOptions(bot, msg);
+  menuHandler.displayConnectionOptions(bot, msg);
 });
 
 // Обработка команды /support
@@ -70,7 +70,5 @@ bot.onText(/\/unsubscribe/, (msg) => {
   console.log(menuHandler);
   menuHandler.handleUnsubscribe(bot, msg);
 });
-
-bot.on("polling_error", err => console.log(err.data.error.message));
 
 languageSelection.initialize(bot);
