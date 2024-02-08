@@ -40,35 +40,41 @@ const commands = [
   }
 ];
 
-bot.setMyCommands(commands);
+try {
+  bot.setMyCommands(commands);
 
-// Обработка команды /connect
-bot.onText(/\/connect/, (msg) => {
-  menuHandler.displayConnectionOptions(bot, msg);
-});
+  // Обработка команды /connect
+  bot.onText(/\/connect/, (msg) => {
+    menuHandler.displayConnectionOptions(bot, msg);
+  });
 
-// Обработка команды /support
-bot.onText(/\/support/, (msg) => {
-  supportHandler.startSupportScenario(bot, msg);
-});
+  // Обработка команды /support
+  bot.onText(/\/support/, (msg) => {
+    supportHandler.startSupportScenario(bot, msg);
+  });
 
-// Обработка команды /channel
-bot.onText(/\/channel/, (msg) => {
-  menuHandler.handleChannelInfo(bot, msg);
-});
+  // Обработка команды /channel
+  bot.onText(/\/channel/, (msg) => {
+    menuHandler.handleChannelInfo(bot, msg);
+  });
 
-bot.onText(/\/about/, (msg) => {
-  menuHandler.displayAboutInfo(bot, msg);
-});
+  bot.onText(/\/about/, (msg) => {
+    menuHandler.displayAboutInfo(bot, msg);
+  });
 
-bot.onText(/\/promotions/, (msg) => {
-  menuHandler.displayPromotions(bot, msg);
-});
+  bot.onText(/\/promotions/, (msg) => {
+    menuHandler.displayPromotions(bot, msg);
+  });
 
-// Обработка команды /unsubscribe
-bot.onText(/\/unsubscribe/, (msg) => {
-  console.log(menuHandler);
-  menuHandler.handleUnsubscribe(bot, msg);
-});
+  // Обработка команды /unsubscribe
+  bot.onText(/\/unsubscribe/, (msg) => {
+    console.log(menuHandler);
+    menuHandler.handleUnsubscribe(bot, msg);
+  });
 
-languageSelection.initialize(bot);
+  languageSelection.initialize(bot);
+} catch (e) {
+  console.log("----------- ERROR -----------");
+  console.error('An error occurred: ', error);
+  console.log("----------- /ERROR -----------");
+}
