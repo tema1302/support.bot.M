@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "i18n": "^0.15.1",
+    "moment": "^2.30.1",
+    "node-fetch": "^2.7.0",
     "node-telegram-bot-api": "^0.64.0"
   }
 }

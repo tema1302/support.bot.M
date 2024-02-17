@@ -1,7 +1,6 @@
 const i18n = require('./config/i18n');
 
-function displayMenu(bot, msg) {
-    const chatId = msg.chat.id;
+function displayMenu(bot, chatId) {
     const options = {
         reply_markup: JSON.stringify({
             inline_keyboard: [

@@ -1,13 +1,13 @@
 const TelegramBot = require('node-telegram-bot-api');
-const languageSelection = require('./languageSelection');
+const languageAndInit = require('./languageAndInit');
 const i18n = require('./config/i18n');
 
 const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M'; // Замените на ваш токен
 const bot = new TelegramBot(token, { polling: true });
 
 const menuHandler = require('./menuHandler');
-const supportHandler = require('./supportHandler');
-const connectionHandler = require('./connectionHandler');
+const support = require('./support');
+const promotions = require('./promotions');
 
 const commands = [
   {
@@ -43,38 +43,38 @@ const commands = [
 try {
   bot.setMyCommands(commands);
 
-  // Обработка команды /connect
-  bot.onText(/\/connect/, (msg) => {
-    menuHandler.displayConnectionOptions(bot, msg);
+  bot.onText(/\/(connect|support|channel|about|promotions|unsubscribe)/, (msg, match) => {
+    const command = match[0].replace('/', '');
+    switch (command) {
+      case 'connect':
+        menuHandler.displayConnectionOptions(bot, msg);
+        break;
+      case 'support':
+        support.startSupportScenario(bot, msg);
+        break;
+      case 'channel':
+        menuHandler.handleChannelInfo(bot, msg);
+        break;
+      case 'about':
+        menuHandler.displayAboutInfo(bot, msg);
+        break;
+      case 'promotions':
+        promotions.displayPromotions(bot, msg.chat.id);
+        break;
+      case 'unsubscribe':
+        console.log(menuHandler);
+        menuHandler.handleUnsubscribe(bot, msg);
+        break;
+      default:
+        // Действие по умолчанию, если команда не распознана
+        console.log(`Команда ${command} не распознана.`);
+    }
   });
+  
 
-  // Обработка команды /support
-  bot.onText(/\/support/, (msg) => {
-    supportHandler.startSupportScenario(bot, msg);
-  });
-
-  // Обработка команды /channel
-  bot.onText(/\/channel/, (msg) => {
-    menuHandler.handleChannelInfo(bot, msg);
-  });
-
-  bot.onText(/\/about/, (msg) => {
-    menuHandler.displayAboutInfo(bot, msg);
-  });
-
-  bot.onText(/\/promotions/, (msg) => {
-    menuHandler.displayPromotions(bot, msg);
-  });
-
-  // Обработка команды /unsubscribe
-  bot.onText(/\/unsubscribe/, (msg) => {
-    console.log(menuHandler);
-    menuHandler.handleUnsubscribe(bot, msg);
-  });
-
-  languageSelection.initialize(bot);
+  languageAndInit.initialize(bot);
 } catch (e) {
   console.log("----------- ERROR -----------");
-  console.error('An error occurred: ', error);
+  console.error('An error occurred: ', e);
   console.log("----------- /ERROR -----------");
 }

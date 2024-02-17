@@ -1,6 +1,7 @@
 let userStates = {}; // Хранит состояние для каждого пользователя
-let userInfo = {}; // Глобальный объект для хранения информации о пользователе
-const GROUP_CHAT_ID = '-4183932329'; // test
+let suppUserInfo = {}; // Глобальный объект для хранения информации о пользователе
+// const GROUP_CHAT_ID = '-4183932329'; // test
+const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 
 const i18n = require('./config/i18n');
@@ -25,7 +26,7 @@ function startSupportScenario(bot, msg) {
         const chatId = msg.chat.id;
         userStates[chatId] = Steps.IDLE;
 
-        userInfo[chatId] = {};
+        suppUserInfo[chatId] = {};
         
         handleSupportRequest(bot, chatId);
     } catch (e) {
@@ -43,8 +44,9 @@ function handleSupportRequest(bot, chatId) {
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: 'Написать логин', callback_data: 'write_login' }],
-                    [{ text: i18n.__('forgot_login'), callback_data: 'forgot_login' }]
+                    [{ text: '✍️ Написать логин', callback_data: 'write_login' }],
+                    [{ text: i18n.__('forgot_login'), callback_data: 'forgot_login' }],
+                    [{ text: 'Назад в меню', callback_data: 'back_to_menu' }],
                 ]
             })
         };
@@ -130,33 +132,33 @@ function handleCallbackQuery(bot, callbackQuery) {
         } else {
             // Обработка других callback_data
             switch (data) {
-                case 'region_yakkasaray':
+                case 'supp_region_yakkasaray':
                     updateUserInfo(chatId, 'region', 'Яккасарайский район');
                     proceedToNextStep(bot, chatId);
                     break;
-                case 'region_mirabad':
+                case 'supp_region_mirabad':
                     updateUserInfo(chatId, 'region', 'Мирабадский район');
                     proceedToNextStep(bot, chatId);
                     break;
-                case 'region_sergeli':
+                case 'supp_region_sergeli':
                     updateUserInfo(chatId, 'region', 'Сергелийский район');
                     proceedToNextStep(bot, chatId);
                     break;
-                case 'region_yangihayot':
+                case 'supp_region_yangihayot':
                     updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
-                    console.log('userInfo[chatId]', userInfo[chatId]);
+                    console.log('suppUserInfo[chatId]', suppUserInfo[chatId]);
                     proceedToNextStep(bot, chatId);
                     break;
-                case 'region_other':
+                case 'supp_region_other':
                     updateUserInfo(chatId, 'region', 'Другой район');
                     proceedToNextStep(bot, chatId);
                     break;
                 case 'forgot_login':
-                    userInfo[chatId] = { scenario: 'forgot_login' };
+                    suppUserInfo[chatId] = { scenario: 'forgot_login' };
                     proceedToNextStep(bot, chatId);
                     break;
                 case 'write_login':
-                    userInfo[chatId] = { scenario: 'write_login' };
+                    suppUserInfo[chatId] = { scenario: 'write_login' };
                     proceedToNextStep(bot, chatId);
                     // bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.');
                     break;    
@@ -178,11 +180,11 @@ function sendRegionSelection(bot, chatId) {
         bot.sendMessage(chatId, 'Выберите ваш район:', {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: 'Яккасарайский район', callback_data: 'region_yakkasaray' }],
-                    [{ text: 'Мирабадский район', callback_data: 'region_mirabad' }],
-                    [{ text: 'Сергелийский район', callback_data: 'region_sergeli' }],
-                    [{ text: 'Янгиҳаётский район', callback_data: 'region_yangihayot' }],
-                    [{ text: 'Другой район', callback_data: 'region_other' }],
+                    [{ text: 'Яккасарайский район', callback_data: 'supp_region_yakkasaray' }],
+                    [{ text: 'Мирабадский район', callback_data: 'supp_region_mirabad' }],
+                    [{ text: 'Сергелийский район', callback_data: 'supp_region_sergeli' }],
+                    [{ text: 'Янгиҳаётский район', callback_data: 'supp_region_yangihayot' }],
+                    [{ text: 'Другой район', callback_data: 'supp_region_other' }],
                     [{ text: 'Назад', callback_data: 'go_back' }]
                 ]
             })
@@ -198,7 +200,7 @@ function sendRegionSelection(bot, chatId) {
 // ++
 function proceedToNextStep(bot, chatId) {
     try {
-        const scenario = userInfo[chatId].scenario;
+        const scenario = suppUserInfo[chatId].scenario;
 
         if (scenario === 'write_login' && userStates[chatId] === Steps.AWAITING_LOGIN) {
             console.log('write', userStates[chatId]);
@@ -223,7 +225,7 @@ function proceedToNextStep(bot, chatId) {
 // --
 function proceedToPreviousStep(bot, chatId) {
     try {
-        const scenario = userInfo[chatId].scenario;
+        const scenario = suppUserInfo[chatId].scenario;
 
         if (scenario === 'write_login' && userStates[chatId] === Steps.AWAITING_QUESTION) {
             userStates[chatId] = Steps.AWAITING_LOGIN;
@@ -249,8 +251,8 @@ function proceedToPreviousStep(bot, chatId) {
 function proceedToStep(bot, chatId, step) {
     try {
         console.log('step =========', step);
-        console.log('userStates =========', userInfo[chatId]);
-        // const scenario = userInfo[chatId].scenario;
+        console.log('userStates =========', suppUserInfo[chatId]);
+        // const scenario = suppUserInfo[chatId].scenario;
 
         // if (scenario === 'forgot_login' && step === Steps.AWAITING_LOGIN) {
         //     // Пропускаем шаг AWAITING_LOGIN для сценария 'forgot_login'
@@ -284,10 +286,12 @@ function proceedToStep(bot, chatId, step) {
                 break;
             case Steps.MESSAGE_WAS_SENT:
                 sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
-                bot.sendMessage(chatId, 'Ваш вопрос был отправлен.');
-                userStates[chatId] = Steps.IDLE; // Возвращаем состояние в IDLE
-                console.log('userStates', userStates);
-                delete userInfo[chatId]; // Очищаем данные пользователя после обработки
+                bot.sendMessage(chatId, 'Ваш вопрос был отправлен.').then(() => {
+                    userStates[chatId] = Steps.IDLE; // Возвращаем состояние в IDLE
+                    console.log('userStates', userStates);
+                    delete suppUserInfo[chatId]; // Очищаем данные пользователя после обработки
+                    menu.displayMenu(bot, chatId);
+                });
                 break;
         }
     } catch (e) {
@@ -301,31 +305,38 @@ function proceedToStep(bot, chatId, step) {
 function clearFutureSteps(chatId, currentStep) {
     const stepKeys = Object.keys(Steps).filter(key => Steps[key] > currentStep);
     stepKeys.forEach(stepKey => {
-        delete userInfo[chatId][stepKey.toLowerCase()];
+        delete suppUserInfo[chatId][stepKey.toLowerCase()];
     });
 }
 
 function updateUserInfo(chatId, field, value) {
-    if (!userInfo[chatId]) userInfo[chatId] = {};
-    userInfo[chatId][field] = value;
+    if (!suppUserInfo[chatId]) suppUserInfo[chatId] = {};
+    suppUserInfo[chatId][field] = value;
 }
 
 function sendDataToAdmins(bot, chatId) {
-    const user = userInfo[chatId];    
-    let message = `Новый запрос поддержки от пользователя:\n`;
-    for (const key in user) {
-        message += `${key}: ${user[key]}\n`;
+    try {
+        const user = suppUserInfo[chatId];    
+        let message = `Новый запрос поддержки от пользователя:\n`;
+        for (const key in user) {
+            message += `${key}: ${user[key]}\n`;
+        }
+        bot.sendMessage(GROUP_CHAT_ID, message);
+    } catch (e) {
+        console.log("----------- ERROR -----------");
+        console.log(e);
+        console.log("----------- /ERROR -----------");
     }
-    bot.sendMessage(GROUP_CHAT_ID, message);
 }
-
 
 module.exports = {
     Steps,
     userStates,
+    suppUserInfo,
     startSupportScenario,
     handleUserInput,
-    handleCallbackQuery
+    handleCallbackQuery,
+    clearFutureSteps
 };
 
 // колбеки имеют следующую структуру:

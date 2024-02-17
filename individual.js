@@ -1,6 +1,8 @@
 const menuHandler = require('./menuHandler');
-const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183932329'; // test
+const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
+const menu = require('./menu');
 
 // Новые состояния для сценария подключения услуг
 const Steps = {
@@ -13,7 +15,8 @@ const Steps = {
   AWAITING_HOUSE_NUMBER: 6,
   AWAITING_APARTMENT_NUMBER: 7,
   AWAITING_TARIFF_SELECTION: 8,
-  MESSAGE_WAS_SENT: 9,
+  CHECK_DATA: 9,
+  MESSAGE_WAS_SENT: 10,
 };
 
 let userStates = {}; // Хранит состояние для каждого пользователя
@@ -42,23 +45,23 @@ function handleUserInput(bot, msg) {
     const text = msg.text;
     switch (userStates[chatId]) {
       case Steps.AWAITING_NAME:
-          updateUserInfo(chatId, 'name', text);
+          updateUserInfo(chatId, 'имя', text);
           proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_PHONE:
-          updateUserInfo(chatId, 'phone', text);
+          updateUserInfo(chatId, 'телефон', text);
           proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_STREET:
-          updateUserInfo(chatId, 'street', text);
+          updateUserInfo(chatId, 'массив или улица', text);
           proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_HOUSE_NUMBER:
-          updateUserInfo(chatId, 'houseNumber', text);
+          updateUserInfo(chatId, 'номер дома', text);
           proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_APARTMENT_NUMBER:
-          updateUserInfo(chatId, 'apartmentNumber', text);
+          updateUserInfo(chatId, 'номер квартиры', text);
           proceedToNextStep(bot, chatId);
           break;
     }
@@ -78,7 +81,6 @@ function handleCallbackQuery(bot, callbackQuery) {
 
     console.log(data);
     if (data === 'go_back_individual') {
-      console.log('loggg go_back_individual');
       proceedToPreviousStep(bot, chatId);
     } else {
       switch (data) {
@@ -86,16 +88,16 @@ function handleCallbackQuery(bot, callbackQuery) {
             startConnectionScenario(bot, chatId);
             break;
           case 'internet':
-          case 'cable_tv':
-              updateUserInfo(chatId, 'service', data);
+          case 'cable-tv':
+              updateUserInfo(chatId, 'услуга', data);
               proceedToNextStep(bot, chatId);
               break;
-          case 'region_yakkasaray':
-          case 'region_mirabad':
-          case 'region_sergeli':
-          case 'region_yangihayot':
-          case 'region_other':
-              updateUserInfo(chatId, 'region', data.replace('region_', ''));
+          case 'ind_region_yakkasaray':
+          case 'ind_region_mirabad':
+          case 'ind_region_sergeli':
+          case 'ind_region_yangihayot':
+          case 'ind_region_other':
+              updateUserInfo(chatId, 'район', data.replace('ind_region_', ''));
               proceedToNextStep(bot, chatId);
               break;
           case 'vip_0':
@@ -109,9 +111,11 @@ function handleCallbackQuery(bot, callbackQuery) {
           case 'gt_1':
           case 'gt_2':
           case 'gt_3':
-              updateUserInfo(chatId, 'tariff', data);
+              updateUserInfo(chatId, 'тариф', data);
               proceedToNextStep(bot, chatId);
               break;
+          case 'data_is_right':
+              proceedToNextStep(bot, chatId);
       }
     }
   } catch (e) {
@@ -127,17 +131,17 @@ function sendTariffSelection(bot, chatId) {
     bot.sendMessage(chatId, 'Выберите тариф:', {
         reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'VIP 0 — 20 Мбит/с, 60 000 сум', callback_data: 'vip_0' }],
-            [{ text: 'VIP 1 — 100 Мбит/с, 85 000 сум', callback_data: 'vip_1' }],
-            [{ text: 'VIP 2 — 100 Мбит/с, 95 000 сум', callback_data: 'vip_2' }],
-            [{ text: 'VIP 3 — 100 Мбит/с, 110 000 сум', callback_data: 'vip_3' }],
-            [{ text: 'VIP 4 — 100 Мбит/с, 140 000 сум', callback_data: 'vip_4' }],
-            [{ text: 'VIP 5 — 100 Мбит/с, 165 000 сум', callback_data: 'vip_5' }],
-            [{ text: 'VIP 6 — 100 Мбит/с, 180 000 сум', callback_data: 'vip_6' }],
-            [{ text: 'VIP 8 — 100 Мбит/с, 230 000 сум', callback_data: 'vip_8' }],
-            [{ text: 'GT 1 — 200 Мбит/с, 165 000 сум', callback_data: 'gt_1' }],
-            [{ text: 'GT 2 — 200 Мбит/с, 250 000 сум', callback_data: 'gt_2' }],
-            [{ text: 'GT 3 — 200 Мбит/с, 300 000 сум', callback_data: 'gt_3' }],
+            [{ text: 'VIP 0 — 🌇20 и 🌃3 Мбит/с, 60т сум', callback_data: 'vip_0' }],
+            [{ text: 'VIP 1 — 🌇100 и 🌃7 Мбит/с, 85т сум', callback_data: 'vip_1' }],
+            [{ text: 'VIP 2 — 🌇100 и 🌃15 Мбит/с, 95т сум', callback_data: 'vip_2' }],
+            [{ text: 'VIP 3 — 🌇100 и 🌃20 Мбит/с, 110т сум', callback_data: 'vip_3' }],
+            [{ text: 'VIP 4 — 🌇100 и 🌃50 Мбит/с, 140т сум', callback_data: 'vip_4' }],
+            [{ text: 'VIP 5 — 🌇100 и 🌃60 Мбит/с, 165т сум', callback_data: 'vip_5' }],
+            [{ text: 'VIP 6 — 🌇100 и 🌃75 Мбит/с, 180т сум', callback_data: 'vip_6' }],
+            [{ text: 'VIP 8 — 🌇100 и 🌃100 Мбит/с, 230т сум', callback_data: 'vip_8' }],
+            [{ text: 'GT 1 — 🌇200 и 🌃50 Мбит/с, 165т сум', callback_data: 'gt_1' }],
+            [{ text: 'GT 2 — 🌇200 и 🌃75 Мбит/с, 250т сум', callback_data: 'gt_2' }],
+            [{ text: 'GT 3 — 🌇200 и 🌃100 Мбит/с, 300т сум', callback_data: 'gt_3' }],
           ]
         })
     });
@@ -182,7 +186,7 @@ function proceedToPreviousStep(bot, chatId) {
 function proceedToStep(bot, chatId, step) {
   try {
     // Расширяем логику перехода к следующему шагу
-    console.log('proceedToStep', step);
+    console.log('proceedToStep individual', step);
     switch (step) {
         case Steps.IDLE:
             menuHandler.displayConnectionOptions(bot, chatId);
@@ -195,7 +199,7 @@ function proceedToStep(bot, chatId, step) {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
                     [{ text: 'Интернет', callback_data: 'internet' }],
-                    [{ text: 'Кабельное ТВ', callback_data: 'cable_tv' }],
+                    [{ text: 'Кабельное ТВ', callback_data: 'cable-tv' }],
                     [{ text: 'Назад', callback_data: 'go_back_individual' }]
                 ]
             })
@@ -208,7 +212,7 @@ function proceedToStep(bot, chatId, step) {
             sendRegionSelection(bot, chatId); // Используйте уже существующую функцию для выбора района
             break;
         case Steps.AWAITING_STREET:
-            bot.sendMessage(chatId, 'Введите название улицы.', backButton());
+            bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
             break;
         case Steps.AWAITING_HOUSE_NUMBER:
             bot.sendMessage(chatId, 'Введите номер дома.', backButton());
@@ -219,10 +223,21 @@ function proceedToStep(bot, chatId, step) {
         case Steps.AWAITING_TARIFF_SELECTION:
             sendTariffSelection(bot, chatId); // Функция для выбора тарифа
             break;
-        case Steps.MESSAGE_WAS_SENT:
+        case Steps.CHECK_DATA:
+            const user = individualUserInfo[chatId];
+            let message = `Проверьте ваши данные:\n\n`;
+            for (const key in user) {
+                message += `▪️ ${key} — ${user[key]}\n`;
+            }
+
+            bot.sendMessage(chatId, message, backButton_withAgree());
+            break;
+          case Steps.MESSAGE_WAS_SENT:
             sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
-            bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!');
-            resetUserState(chatId); // Сброс состояния и информации пользователя
+            bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
+              resetUserState(chatId); // Сброс состояния и информации пользователя
+              menu.displayMenu(bot, chatId);
+            });
             break;
         default:
             break;
@@ -244,6 +259,17 @@ function backButton() {
       })
   };
 }
+function backButton_withAgree() {
+  return {
+      reply_markup: JSON.stringify({
+          inline_keyboard: [
+            [{ text: 'Данные верны', callback_data: 'data_is_right' }],
+            [{ text: 'Назад', callback_data: 'go_back_individual' }],
+          ]
+      })
+  };
+}
+
 
 function resetUserState(chatId) {
   try {
@@ -269,11 +295,11 @@ function sendRegionSelection(bot, chatId) {
       bot.sendMessage(chatId, 'Выберите ваш район:', {
           reply_markup: JSON.stringify({
               inline_keyboard: [
-                  [{ text: 'Яккасарайский район', callback_data: 'region_yakkasaray' }],
-                  [{ text: 'Мирабадский район', callback_data: 'region_mirabad' }],
-                  [{ text: 'Сергелийский район', callback_data: 'region_sergeli' }],
-                  [{ text: 'Янгиҳаётский район', callback_data: 'region_yangihayot' }],
-                  [{ text: 'Другой район', callback_data: 'region_other' }],
+                  [{ text: 'Яккасарайский район', callback_data: 'ind_region_yakkasaray' }],
+                  [{ text: 'Мирабадский район', callback_data: 'ind_region_mirabad' }],
+                  [{ text: 'Сергелийский район', callback_data: 'ind_region_sergeli' }],
+                  [{ text: 'Янгиҳаётский район', callback_data: 'ind_region_yangihayot' }],
+                  [{ text: 'Другой район', callback_data: 'ind_region_other' }],
                   [{ text: 'Назад', callback_data: 'go_back' }]
               ]
           })
@@ -295,11 +321,12 @@ function updateUserInfo(chatId, field, value) {
 // Отправка данных администраторам
 function sendDataToAdmins(bot, chatId) {
   const user = individualUserInfo[chatId];
-  let message = `Новая заявка на подключение услуг Физ. лица:\n`;
+  let message = `👨🏻‍🦲Новая заявка на подключение услуг Физ. лица:\n\n`;
   for (const key in user) {
-      message += `${key}: ${user[key]}\n`;
+      message += `▪️ ${key} — ${user[key]}\n`;
   }
+  // bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
   bot.sendMessage(GROUP_CHAT_ID, message);
 }
 
-module.exports = { handleUserInput, handleCallbackQuery, startConnectionScenario };
+module.exports = { individualUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startConnectionScenario };

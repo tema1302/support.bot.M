@@ -1,6 +1,8 @@
 const menuHandler = require('./menuHandler');
-const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183932329'; // test
+const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
+const menu = require('./menu');
 
 // Новые состояния для сценария подключения услуг юридических лиц
 const Steps = {
@@ -37,15 +39,15 @@ function handleUserInput(bot, msg) {
     const text = msg.text;
     switch (userStates[chatId]) {
       case Steps.AWAITING_NAME:
-        updateUserInfo(chatId, 'name', text);
+        updateUserInfo(chatId, 'имя', text);
         proceedToNextStep(bot, chatId);
         break;
       case Steps.AWAITING_PHONE:
-        updateUserInfo(chatId, 'phone', text);
+        updateUserInfo(chatId, 'телефон', text);
         proceedToNextStep(bot, chatId);
         break;
       case Steps.AWAITING_ADDRESS:
-        updateUserInfo(chatId, 'address', text);
+        updateUserInfo(chatId, 'адрес', text);
         proceedToNextStep(bot, chatId);
         break;
     }
@@ -80,32 +82,31 @@ function handleCallbackQuery(bot, callbackQuery) {
       proceedToPreviousStep(bot, chatId);
     } else {
       switch (data) {
-        // компании перенести в company.js
           case 'legal_entity':
             startLegalEntityConnectionScenario(bot, chatId);
             break;
-          case 'region_yakkasaray':
-          case 'region_mirabad':
-          case 'region_sergeli':
-          case 'region_yangihayot':
-          case 'region_other':
-              updateUserInfo(chatId, 'region', data.replace('region_', ''));
-              proceedToNextStep(bot, chatId);
-              break;
-          case 'vip_0':
-          case 'vip_1':
-          case 'vip_2':
-          case 'vip_3':
-          case 'vip_4':
-          case 'vip_5':
-          case 'vip_6':
-          case 'vip_8':
-          case 'gt_1':
-          case 'gt_2':
-          case 'gt_3':
-              updateUserInfo(chatId, 'tariff', data);
-              proceedToNextStep(bot, chatId);
-              break;
+          // case 'region_yakkasaray':
+          // case 'region_mirabad':
+          // case 'region_sergeli':
+          // case 'region_yangihayot':
+          // case 'region_other':
+          //     updateUserInfo(chatId, 'region', data.replace('region_', ''));
+          //     proceedToNextStep(bot, chatId);
+          //     break;
+          // case 'vip_0':
+          // case 'vip_1':
+          // case 'vip_2':
+          // case 'vip_3':
+          // case 'vip_4':
+          // case 'vip_5':
+          // case 'vip_6':
+          // case 'vip_8':
+          // case 'gt_1':
+          // case 'gt_2':
+          // case 'gt_3':
+          //     updateUserInfo(chatId, 'tariff', data);
+          //     proceedToNextStep(bot, chatId);
+          //     break;
       }
     }
   } catch (e) {
@@ -174,8 +175,10 @@ function proceedToStep(bot, chatId, step) {
         break;
       case Steps.MESSAGE_WAS_SENT:
         sendDataToAdmins(bot, chatId);
-        bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!');
-        resetUserState(chatId); 
+        bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
+          resetUserState(chatId);
+          menu.displayMenu(bot, chatId);
+        });
         break;
     }
   } catch (e) {
@@ -201,11 +204,11 @@ function updateUserInfo(chatId, field, value) {
 // Отправка данных администраторам с учетом типа заявителя (юридическое лицо)
 function sendDataToAdmins(bot, chatId) {
   const userInfo = companyUserInfo[chatId];
-  let message = `*Новая заявка на подключение услуг Юр. лица:*\n`;
+  let message = `🏙 Новая заявка на подключение услуг Юр. лица:\n\n`;
   for (const key in userInfo) {
-    message += `${key}: ${userInfo[key]}\n`;
+    message += `▪️ ${key}: ${userInfo[key]}\n`;
   }
   bot.sendMessage(GROUP_CHAT_ID, message);
 }
 
-module.exports = { handleUserInput, handleCallbackQuery, startLegalEntityConnectionScenario };
+module.exports = { companyUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startLegalEntityConnectionScenario };

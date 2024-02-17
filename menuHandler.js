@@ -1,7 +1,8 @@
-const supportHandler = require('./supportHandler');
+const support = require('./support');
 // const connectionHandler = require('./connectionHandler');
 const menu = require('./menu');
 const i18n = require('./config/i18n');
+const promotions = require('./promotions');
 
 function handleMenuAction(bot, action, msg) {
     try {
@@ -11,14 +12,14 @@ function handleMenuAction(bot, action, msg) {
                 displayConnectionOptions(bot, msg);
                 break;
             case 'support':
-                supportHandler.startSupportScenario(bot, msg);
+                support.startSupportScenario(bot, msg);
                 console.log('support');
                 break;
             case 'channel':
                 handleChannelInfo(bot, msg);
                 break;
             case 'promotions':
-                displayPromotions(bot, msg);
+                promotions.displayPromotions(bot, msg.chat.id);
                 break;
             case 'about_us':
                 displayAboutInfo(bot, msg);
@@ -66,22 +67,32 @@ function handleUnsubscribe(bot, msg) {
     // Например, удаление пользователя из базы данных подписчиков
     bot.sendMessage(chatId, 'Вы отписались от бота. Чтобы подписаться снова, отправьте команду /start.');
 }
-
-function displayPromotions(bot, msg) {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Инфа о акциях');
-}
-
 function displayAboutInfo(bot, msg) {
     const chatId = msg.chat.id;
+    const options = {
+        parse_mode: 'HTML',
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: 'Назад', callback_data: 'back_to_menu' }]
+            ]
+        })
+    };
     // Здесь должна быть логика для отписки пользователя от бота
     // Например, удаление пользователя из базы данных подписчиков
-    bot.sendMessage(chatId, 'Инфа о нас.');
+    bot.sendMessage(chatId, '<b>Кто мы</b>\n\n<b>Gals Telecom</b> подключает интернет в Ташкенте и кабельное телевидение с 2008 года. За это время выросли не только гигабиты скорости, но и возможности, которые мы предоставляем. Для частных клиентов — бесплатные цифровые ресурсы: доступ к музыке, кино, цифровому и IP-телевидению. Для корпоративных — индивидуальные тарифы под любые отрасли бизнеса, задачи и команды.\nМы поддерживаем высокую скорость и стабильное качество связи, чем бы вы не занимались.\n\n<b>Как мы это делаем</b>\n\nМы объединяем технологии и опыт, чтобы оперативно подключать новых клиентов и помогать тем, кто уже с нами. Мы отвечаем за качество интернета от монтажа и настройки оборудования до последующего сервиса и поддержки 24/7.\n<b>Наша миссия</b> — создавать условия для комфортной жизни и развития бизнеса за счёт внедрения цифровых технологий.\n\nМы ценим ваше время, поэтому всегда остаёмся на связи. Служба технической поддержки работает 24/7, в выходные и праздники. Позвоните, чтобы узнать больше о тарифах и бесплатных цифровых сервисах от интернет в Ташкенте <b>Gals Telecom</b>.', options);
 }
 
 function handleChannelInfo(bot, msg) {
+    const options = {
+        parse_mode: 'HTML',
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: 'Назад', callback_data: 'back_to_menu' }]
+            ]
+        })
+    };
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Посетите наш телеграм-канал: https://t.me/galstelecom');
+    bot.sendMessage(chatId, 'Посетите наш телеграм-канал: https://t.me/galstelecom', options);
 }
 
-module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo, displayPromotions, displayAboutInfo, displayConnectionOptions };
+module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo, displayAboutInfo, displayConnectionOptions };
