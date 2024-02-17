@@ -125,7 +125,6 @@ function handleCallbackQuery(bot, callbackQuery) {
   }
 }
 
-// Добавляем функцию для отправки кнопок выбора тарифа
 function sendTariffSelection(bot, chatId) {
   try {
     bot.sendMessage(chatId, 'Выберите тариф:', {
@@ -236,7 +235,6 @@ function proceedToStep(bot, chatId, step) {
             sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
             bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
               resetUserState(chatId); // Сброс состояния и информации пользователя
-              menu.displayMenu(bot, chatId);
             });
             break;
         default:

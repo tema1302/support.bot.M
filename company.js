@@ -177,7 +177,6 @@ function proceedToStep(bot, chatId, step) {
         sendDataToAdmins(bot, chatId);
         bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
           resetUserState(chatId);
-          menu.displayMenu(bot, chatId);
         });
         break;
     }
