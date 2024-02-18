@@ -106,10 +106,10 @@ try {
     // здесь логика обработки
   });
   
-  process.on('uncaughtException', (error) => {
-    console.error('Неперехваченное исключение:', error);
-    // здесь логика обработки
-  });
+  // process.on('uncaughtException', (error) => {
+  //   console.error('Неперехваченное исключение:', error);
+  //   // здесь логика обработки
+  // });
   
 
   languageAndInit.initialize(bot);

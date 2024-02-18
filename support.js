@@ -258,9 +258,9 @@ async function proceedToPreviousStep(bot, chatId) {
 }
 
 
-const messageUserAndAdmins = (chatId) => {
+const messageUserAndAdmins = (chatId, startMessage) => {
     const user = suppUserInfo[chatId];    
-    let message = `Новый запрос поддержки от пользователя:\n\n`;
+    let message = `${startMessage}:\n\n`;
     const fieldMapReverse = {
         'login': 'Логин',
         'region': 'Район',
@@ -277,7 +277,7 @@ const messageUserAndAdmins = (chatId) => {
         const keyRussian = fieldMapReverse[key] || key;
         message += `▪️ ${keyRussian}: ${user[key]}\n`;
     }
-    return message
+    return message;
 }
 
 async function proceedToStep(bot, chatId, step) {
@@ -321,7 +321,9 @@ async function proceedToStep(bot, chatId, step) {
                 await bot.sendMessage(chatId, 'Теперь можете ввести ваш вопрос.', backButton());
                 break;
             case Steps.CHECK_DATA:    
-                await bot.sendMessage(chatId, messageUserAndAdmins(chatId), backButton_withAgree());
+            const startMessage = 'Проверьте ваши данные';
+            const messageU = messageUserAndAdmins(chatId, startMessage);
+                bot.sendMessage(chatId, messageU, backButton_withAgree());
                 break;
         
             case Steps.MESSAGE_WAS_SENT:
@@ -355,7 +357,9 @@ function updateUserInfo(chatId, field, value) {
 
 async function sendDataToAdmins(bot, chatId) {
     try {
-        await bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
+        const startMessage = '🆘Новый запрос поддержки от пользователя';
+        const messageA = messageUserAndAdmins(chatId, startMessage);
+        await bot.sendMessage(GROUP_CHAT_ID, messageA);
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);

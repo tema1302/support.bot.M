@@ -4,6 +4,9 @@ const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const i18n = require('./config/i18n');
 const { logMessage } = require('./logger');
+const menuHandler = require('./menuHandler'); // Import the menuHandler module
+const { sendRegionSelection, sendTariffSelection, sendDataToAdmins } = require('./helpers'); // Import the necessary helper functions
+const i18n = require('i18n'); // Import the i18n module
 
 const Steps = {
   IDLE: 0,
@@ -189,9 +192,9 @@ async function proceedToPreviousStep(bot, chatId) {
   }
 }
 
-const messageUserAndAdmins = (chatId) => {
+const messageUserAndAdmins = (chatId, startMessage) => {
   const user = individualUserInfo[chatId];    
-  let message = `Новый запрос поддержки от пользователя:\n\n`;
+  let message = `${startMessage}:\n\n`;
   const fieldMapReverse = {
       'region': 'Район',
       'array_or_street': 'Массив или улица',
@@ -208,78 +211,82 @@ const messageUserAndAdmins = (chatId) => {
       const keyRussian = fieldMapReverse[key] || key;
       message += `▪️ ${keyRussian}: ${user[key]}\n`;
   }
-  return message
+  return message;
 }
 
 
 async function proceedToStep(bot, chatId, step) {
   try {
-    logMessage(`=== Физ.лицо === Шаг ${step}`);
-    console.log('proceedToStep individual', step);
-    switch (step) {
-        case Steps.IDLE:
-            menuHandler.displayConnectionOptions(bot, chatId);
-            break;
-        case Steps.AWAITING_NAME:
-            await bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
-            break;
-        case Steps.AWAITING_SERVICE_SELECTION:
-          await bot.sendMessage(chatId, 'Что вас интересует?', {
-            reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    [{ text: 'Интернет', callback_data: 'internet' }],
-                    [{ text: 'Кабельное ТВ', callback_data: 'cable-tv' }],
-                    [{ text: 'Назад', callback_data: 'go_back_individual' }]
-                ]
-            })
-        });
-            break;
-        case Steps.AWAITING_PHONE:
-            await bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
-            break;
-        case Steps.AWAITING_REGION_SELECTION:
-            sendRegionSelection(bot, chatId); // Используйте уже существующую функцию для выбора района
-            break;
-        case Steps.AWAITING_STREET:
-            await bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
-            break;
-        case Steps.AWAITING_HOUSE_NUMBER:
-            await bot.sendMessage(chatId, 'Введите номер дома.', backButton());
-            break;
-        case Steps.AWAITING_APARTMENT_NUMBER:
-            await bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
-            break;
-        case Steps.AWAITING_TARIFF_SELECTION:
-            sendTariffSelection(bot, chatId); // Функция для выбора тарифа
-            break;
-        case Steps.CHECK_DATA:
-
-            await bot.sendMessage(chatId, messageUserAndAdmins(chatId), backButton_withAgree());
-            break;
-          case Steps.MESSAGE_WAS_SENT:
-            sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
-            await bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
-              resetUserState(chatId); // Сброс состояния и информации пользователя
-            });
-            break;
-        default:
-            break;
-    }
+  logMessage(`=== Физ.лицо === Шаг ${step}`);
+  console.log('proceedToStep individual', step);
+  switch (step) {
+    case Steps.IDLE:
+      menuHandler.displayConnectionOptions(bot, chatId);
+      break;
+    case Steps.AWAITING_NAME:
+      bot.sendMessage(chatId, 'Введите ваше имя.', backButton_withAgree());
+      break;
+    case Steps.AWAITING_SERVICE_SELECTION:
+      bot.sendMessage(chatId, 'Что вас интересует?', {
+      reply_markup: JSON.stringify({
+        inline_keyboard: [
+          [{ text: 'Интернет', callback_data: 'internet' }],
+          [{ text: 'Кабельное ТВ', callback_data: 'cable-tv' }],
+          [{ text: 'Назад', callback_data: 'go_back_individual' }]
+        ]
+      })
+    });
+      break;
+    case Steps.AWAITING_PHONE:
+      bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton_withAgree());
+      break;
+    case Steps.AWAITING_REGION_SELECTION:
+      sendRegionSelection(bot, chatId); // Use the existing sendRegionSelection function for region selection
+      break;
+    case Steps.AWAITING_STREET:
+      bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton_withAgree());
+      break;
+    case Steps.AWAITING_HOUSE_NUMBER:
+      bot.sendMessage(chatId, 'Введите номер дома.', backButton_withAgree());
+      break;
+    case Steps.AWAITING_APARTMENT_NUMBER:
+      bot.sendMessage(chatId, 'Введите номер квартиры.', backButton_withAgree());
+      break;
+    case Steps.AWAITING_TARIFF_SELECTION:
+      sendTariffSelection(bot, chatId); // Use the existing sendTariffSelection function for tariff selection
+      break;
+    case Steps.CHECK_DATA:
+      console.log('Steps.CHECK_DATA');
+      const startMessage = 'Проверьте ваши данные';
+      
+      const messageU = messageUserAndAdmins(chatId, startMessage);
+      console.log(messageU)
+      await bot.sendMessage(chatId, messageU, backButton_withAgree());
+      break;
+    case Steps.MESSAGE_WAS_SENT:
+      await sendDataToAdmins(bot, chatId); // Use the existing sendDataToAdmins function to send data to admins
+      bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
+        resetUserState(chatId); // Reset user state and information
+      });
+      break;
+    default:
+      break;
+  }
   } catch (e) {
-    console.log("----------- ERROR -----------");
-    console.log(e);
-    console.log("----------- /ERROR -----------");
+  console.log("----------- ERROR -----------");
+  console.log(e);
+  console.log("----------- /ERROR -----------");
   }
 }
 
-// Функция для создания кнопки "Назад"
-function backButton() {
+function backButton_withAgree() {
   return {
-      reply_markup: JSON.stringify({
-          inline_keyboard: [
-              [{ text: 'Назад', callback_data: 'go_back_individual' }]
-          ]
-      })
+    reply_markup: JSON.stringify({
+      inline_keyboard: [
+      [{ text: 'Данные верны', callback_data: 'data_is_right' }],
+      [{ text: 'Назад', callback_data: 'go_back_individual' }],
+      ]
+    })
   };
 }
 function backButton_withAgree() {
@@ -343,7 +350,9 @@ function updateUserInfo(chatId, field, value) {
 
 async function sendDataToAdmins(bot, chatId) {
   // await bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
-  await bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
+  const startMessage = '🧑🏻‍🦲Новая заявка на подключение услуг Физ. лица';
+  const messageA = messageUserAndAdmins(chatId, startMessage);
+  await bot.sendMessage(GROUP_CHAT_ID, messageA);
 }
 
 module.exports = { individualUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startConnectionScenario };

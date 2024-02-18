@@ -177,7 +177,7 @@ function clearFutureSteps(chatId, currentStep) {
 
 const messageUserAndAdmins = (chatId) => {
   const user = companyUserInfo[chatId];    
-  let message = `Новый запрос поддержки от пользователя:\n\n`;
+  let message = `🏙 Новая заявка на подключение услуг Юр. лица:\n\n`;
   const fieldMapReverse = {
       'address': 'Адрес',
       'name': 'Имя',
@@ -189,7 +189,7 @@ const messageUserAndAdmins = (chatId) => {
       const keyRussian = fieldMapReverse[key] || key;
       message += `▪️ ${keyRussian}: ${user[key]}\n`;
   }
-  return message
+  return message;
 }
 
 
@@ -201,12 +201,8 @@ function updateUserInfo(chatId, field, value) {
 
 // Отправка данных администраторам с учетом типа заявителя (юридическое лицо)
 function sendDataToAdmins(bot, chatId) {
-  const userInfo = companyUserInfo[chatId];
-  let message = `🏙 Новая заявка на подключение услуг Юр. лица:\n\n`;
-  for (const key in userInfo) {
-    message += `▪️ ${key}: ${userInfo[key]}\n`;
-  }
-  bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
+  const messageA = messageUserAndAdmins(chatId)
+  bot.sendMessage(GROUP_CHAT_ID, messageA);
 }
 
 module.exports = { companyUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startLegalEntityConnectionScenario };
