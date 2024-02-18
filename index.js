@@ -2,12 +2,36 @@ const TelegramBot = require('node-telegram-bot-api');
 const languageAndInit = require('./languageAndInit');
 const i18n = require('./config/i18n');
 
-const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M'; // Замените на ваш токен
+const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M';
 const bot = new TelegramBot(token, { polling: true });
-
 const menuHandler = require('./menuHandler');
 const support = require('./support');
 const promotions = require('./promotions');
+const { sendTariffSelection } = require('./tariffSelection');
+
+
+// const fetch = require('node-fetch');
+// const url = `https://api.telegram.org/bot${token}/getUpdates`;
+
+// async function getUpdates() {
+//   try {
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     console.log(data)
+//     if (data.ok) {
+//       console.log('Получены обновления:', data.result);
+//       return data.result
+//     } else {
+//       console.log('Ошибка при получении обновлений');
+//     }
+//   } catch (error) {
+//     console.error('Ошибка:', error);
+//   }
+// }
+
+// getUpdates();
+
+
 
 const commands = [
   {
@@ -37,13 +61,17 @@ const commands = [
   {
       command: "unsubscribe",
       description: i18n.__('unsubscribe')
+  },
+  {
+      command: "tariffs",
+      description: 'Тарифы'
   }
 ];
 
 try {
   bot.setMyCommands(commands);
 
-  bot.onText(/\/(connect|support|channel|about|promotions|unsubscribe)/, (msg, match) => {
+  bot.onText(/\/(connect|support|channel|about|promotions|unsubscribe|tariffs)/, (msg, match) => {
     const command = match[0].replace('/', '');
     switch (command) {
       case 'connect':
@@ -62,13 +90,25 @@ try {
         promotions.displayPromotions(bot, msg.chat.id);
         break;
       case 'unsubscribe':
-        console.log(menuHandler);
         menuHandler.handleUnsubscribe(bot, msg);
+        break;
+      case 'tariffs':
+        sendTariffSelection(bot, msg.chat.id);
         break;
       default:
         // Действие по умолчанию, если команда не распознана
         console.log(`Команда ${command} не распознана.`);
     }
+  });
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Неперехваченное отклонение обещания:', promise, 'причина:', reason);
+    // здесь логика обработки
+  });
+  
+  process.on('uncaughtException', (error) => {
+    console.error('Неперехваченное исключение:', error);
+    // здесь логика обработки
   });
   
 

@@ -8,51 +8,27 @@ const menu = require('./menu');
 const company = require('./company');
 const promotions = require('./promotions');
 const { logMessage } = require('./logger');
+const { handleTariffSelection } = require('./tariffSelection');
+const fetch = require('node-fetch');
 
 function initialize(bot) {
-    // const fetch = require('node-fetch');
-
-    // const url = "https://api.graspil.com/api/send-update";
-    // const api_key = "65c8e816177eb:9cb0abd1ddc8a8f2dbcf78aa3cfcadc569f4dabb1084a25980910e97b35a4c60";  // your API key
-    // const data = {
-    //     "ok": true,
-    //     "result": [
-    //         {
-    //         "update_id": 123,
-    //         "message": { /* детали сообщения */ }
-    //         }
-    //     ]
-    // };  // received data from telegram
-
-    // const headers = {
-    //     "Api-Key": api_key,
-    //     "Content-Type": "application/json"
-    // };
-    
-    // fetch(url, {
-    //     method: "POST",
-    //     headers: headers,
-    //     body: JSON.stringify(data)
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     // Обработка ответа
-    //     console.log(data);
-    // });
     
 
-    try {
-        bot.onText(/\/start/, (msg) => {
-            languageHandler.displayLanguageOptions(bot, msg);
-        });
-    } catch (e) {
-        console.log("----------- ERROR -----------");
-        console.log(e);
-        console.log("----------- /ERROR -----------");
-    }
+    
+    bot.onText(/\/start/, async (msg) => {
+        try {
+            await languageHandler.displayLanguageOptions(bot, msg);
+        } catch (e) {
+            console.log("----------- ERROR -----------");
+            console.log(e);
+            console.log("----------- /ERROR -----------");
+        }
+    });
 
-    try {
-        bot.on('message', (msg) => {
+
+    
+    bot.on('message', async (msg) => {
+        try {
             const username = msg.from.username || msg.from.first_name || "Аноним";
             const text = msg.text;
             logMessage(username, `Получено сообщение: ${text}`);
@@ -69,38 +45,79 @@ function initialize(bot) {
                 individual.handleUserInput(bot, msg);
                 company.handleUserInput(bot, msg);
             }
-        });
-    } catch (e) {
-        logMessage("SYSTEM", `Ошибка в обработчике сообщений: ${e.message}`);
-        console.log("----------- ERROR -----------");
-        console.log(e);
-        console.log("----------- /ERROR -----------");
-    }
+        } catch (e) {
+                logMessage("SYSTEM", `Ошибка в обработчике сообщений: ${e.message}`);
+                console.log("----------- ERROR -----------");
+                console.log(e);
+                console.log("----------- /ERROR -----------");
+        }
+        // try {
+        //         const api_key = "65c8e816177eb:9cb0abd1ddc8a8f2dbcf78aa3cfcadc569f4dabb1084a25980910e97b35a4c60";
+        //         const response = await fetch('https://api.graspil.com/api/send-update', {
+        //         method: 'POST',
+        //         headers: {
+        //             "Api-Key": api_key,
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify(msg),
+        //         });
+            
+        //         if (!response.ok) {
+        //         throw new Error(`Ошибка отправки данных в Graspil: ${response.statusText}`);
+        //         }
+            
+        //         console.log('Данные успешно отправлены в Graspil');
+        //         console.log(response);
+        //     } catch (error) {
+        //         console.error('Ошибка при отправке данных в Graspil:', error);
+        //     }
+
+
+            // const url = "https://api.graspil.com/api/send-update";
+            // // const api_key = "65c8e816177eb:9cb0abd1ddc8a8f2dbcf78aa3cfcadc569f4dabb1084a25980910e97b35a4c60";  // your API key
+            // const data = {
+            //     "ok": true,
+            //     "result": [
+            //         {
+            //         "update_id": 123,
+            //         "message": { /* детали сообщения */ }
+            //         }
+            //     ]
+            // };  // received data from telegram
+
+            // const headers = {
+            //     "Api-Key": api_key,
+            //     "Content-Type": "application/json"
+            // };
+            
+            // fetch(url, {
+            //     method: "POST",
+            //     headers: headers,
+            //     body: JSON.stringify(data)
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     // Обработка ответа
+            //     console.log(data);
+            // });
+    });
+    
 
 
 
-    try {
-        bot.on('callback_query', (callbackQuery) => {
+    
+    bot.on('callback_query', (callbackQuery) => {
+        try {
             const action = callbackQuery.data;
             const msg = callbackQuery.message;
             const chatId = msg.chat.id;
 
             const username = callbackQuery.from.username || callbackQuery.from.first_name || "Аноним";
-            logMessage(username, `Нажата inline-кнопка: ${action}`);
-
-
+            
             console.log("----------- START CALLBACK QUERY -----------");
             console.log('ТЕКУЩАЯ КОМАНДА, callbackQuery.data ====== ', action);
-            console.log('suppory.suppUserInfo == ', support.suppUserInfo);
-            console.log('individual.individualUserInfo ==', individual.individualUserInfo);
-            console.log('company.companyUserInfo ==', company.companyUserInfo);
+            logMessage(username, `Нажата inline-кнопка: ${action}`);
 
-            // завершать сценарий при нажатии на кнопку, которая к сценарию не относится.
-            // const connectionScenarioActions = ['individual', 'legal_entity', 'internet', 'cable-tv', 'ind_region_yakkasaray', 'ind_region_mirabad', 'ind_region_sergeli', 'ind_region_yangihayot', 'ind_region_other', 'vip_0', 'vip_1', 'vip_2', 'vip_3', 'vip_4', 'vip_5', 'vip_6', 'vip_8', 'gt_1', 'gt_2', 'gt_3'];
-            // const supportScenarioActions = ['go_back_support', 'send_message', 'send_contact', 'send_location', 'supp_region_yangihayot', 'supp_region_yakkasaray', 'supp_region_mirabad', 'supp_region_sergeli', 'supp_region_other'];
-            // if (!connectionScenarioActions.includes(action)) {
-            //     return;
-            // }
             switch (action) {
                 // языки
                 case 'russian': 
@@ -129,15 +146,17 @@ function initialize(bot) {
                     individual.handleCallbackQuery(bot, callbackQuery);
                     company.handleCallbackQuery(bot, callbackQuery);
                     menuHandler.handleMenuAction(bot, action, msg);
+                    handleTariffSelection(bot, chatId, action);
                     break;
             }
-        });
-    } catch (e) {
-        logMessage("SYSTEM", `Ошибка в обработчике сообщений: ${e.message}`);
-        console.log("----------- ERROR -----------");
-        console.log(e);
-        console.log("----------- /ERROR -----------");
-    }
+        } catch (e) {
+            logMessage("SYSTEM", `Ошибка в обработчике сообщений: ${e.message}`);
+            console.log("----------- ERROR -----------");
+            console.log(e);
+            console.log("----------- /ERROR -----------");
+        }
+    });
+    
 }
 
 module.exports = { initialize };

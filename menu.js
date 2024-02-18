@@ -9,7 +9,8 @@ function displayMenu(bot, chatId) {
                 [{ text: i18n.__('about_us'), callback_data: 'about_us' }],
                 [{ text: i18n.__('support'), callback_data: 'support' }],
                 [{ text: i18n.__('channel'), callback_data: 'channel' }],
-                [{ text: i18n.__('unsubscribe'), callback_data: 'unsubscribe' }]
+                [{ text: i18n.__('unsubscribe'), callback_data: 'unsubscribe' }],
+                [{ text: 'Тарифы', callback_data: 'tariffs' }],
             ]
         })
     };

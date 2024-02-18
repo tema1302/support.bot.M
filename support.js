@@ -3,9 +3,8 @@ let suppUserInfo = {}; // Глобальный объект для хранен�
 // const GROUP_CHAT_ID = '-4183932329'; // test
 const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
-
+const { logMessage } = require('./logger');
 const i18n = require('./config/i18n');
-const menu = require('./menu');
 
 // Инициализация состояний. Во всех, кроме IDLE, бот ожидает ответа от пользователя
 const Steps = {
@@ -23,14 +22,14 @@ const Steps = {
 };
 
 
-function startSupportScenario(bot, msg) {
+async function startSupportScenario(bot, msg) {
     try {
         const chatId = msg.chat.id;
         userStates[chatId] = Steps.IDLE;
 
         suppUserInfo[chatId] = {};
         
-        handleSupportRequest(bot, chatId);
+        await handleSupportRequest(bot, chatId);
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);
@@ -39,7 +38,7 @@ function startSupportScenario(bot, msg) {
 }
 
 
-function handleSupportRequest(bot, chatId) {
+async function handleSupportRequest(bot, chatId) {
     try {
         console.log('chatId', chatId);
         console.log('userStates[chatId]', userStates[chatId]);
@@ -52,7 +51,7 @@ function handleSupportRequest(bot, chatId) {
                 ]
             })
         };
-        bot.sendMessage(chatId, i18n.__('click_button_below_or_write_login'), options);
+        await bot.sendMessage(chatId, i18n.__('click_button_below_or_write_login'), options);
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);
@@ -62,7 +61,7 @@ function handleSupportRequest(bot, chatId) {
 
 
 // обработка ввода пользователя в сценарии "поддержка"
-function handleUserInput(bot, msg) {
+async function handleUserInput(bot, msg) {
     try {
         const chatId = msg.chat.id;
         if (!userStates[chatId] || userStates[chatId] === Steps.IDLE) return;
@@ -76,31 +75,31 @@ function handleUserInput(bot, msg) {
             case Steps.AWAITING_LOGIN:
                 updateUserInfo(chatId, 'login', text);
                 // userStates[chatId] = Steps.AWAITING_QUESTION
-                proceedToNextStep(bot, chatId);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_STREET:
-                updateUserInfo(chatId, 'массив или улица', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'array_or_street', text);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_HOUSE_NUMBER:
-                updateUserInfo(chatId, 'номер дома', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'house_number', text);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_APARTMENT_NUMBER:
-                updateUserInfo(chatId, 'номер квартиры', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'apartment_number', text);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_NAME:
-                updateUserInfo(chatId, 'имя', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'name', text);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_PHONE:
-                updateUserInfo(chatId, 'телефон', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'phone', text);
+                await proceedToNextStep(bot, chatId);
                 break;
             case Steps.AWAITING_QUESTION:
-                updateUserInfo(chatId, 'вопрос', text);
-                proceedToNextStep(bot, chatId);
+                updateUserInfo(chatId, 'question', text);
+                await proceedToNextStep(bot, chatId);
                 break;
         }
     } catch (e) {
@@ -131,7 +130,7 @@ function backButton_withAgree() {
 }
 
 // отработка кнопок внутри сценария "поддержка"
-function handleCallbackQuery(bot, callbackQuery) {
+async function handleCallbackQuery(bot, callbackQuery) {
     try {
         // console.log('Проверка callbackQuery: ', callbackQuery);
         const msg = callbackQuery.message;
@@ -139,41 +138,41 @@ function handleCallbackQuery(bot, callbackQuery) {
         const data = callbackQuery.data; // название кнопки, которую нажал пользователь
         // Обработка кнопки "Назад"
         if (data === 'go_back') {
-            proceedToPreviousStep(bot, chatId);
+            await proceedToPreviousStep(bot, chatId);
         } else {
             // Обработка других callback_data
             switch (data) {
                 case 'supp_region_yakkasaray':
                     updateUserInfo(chatId, 'region', 'Яккасарайский район');
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'supp_region_mirabad':
                     updateUserInfo(chatId, 'region', 'Мирабадский район');
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'supp_region_sergeli':
                     updateUserInfo(chatId, 'region', 'Сергелийский район');
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'supp_region_yangihayot':
                     updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'supp_region_other':
                     updateUserInfo(chatId, 'region', 'Другой район');
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'forgot_login':
                     suppUserInfo[chatId] = { scenario: 'forgot_login' };
-                    proceedToNextStep(bot, chatId);
+                    await proceedToNextStep(bot, chatId);
                     break;
                 case 'write_login':
                     suppUserInfo[chatId] = { scenario: 'write_login' };
-                    proceedToNextStep(bot, chatId);
-                    // bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.');
+                    await proceedToNextStep(bot, chatId);
+                    // await bot.sendMessage(chatId, 'Пожалуйста, напишите ваш логин.');
                     break;    
                 case 'data_is_right_supp':
-                    proceedToNextStep(bot, chatId);          
+                    await proceedToNextStep(bot, chatId);          
             }
             
             // console.log('userStates in handleCallbackQuery', userStates);
@@ -186,9 +185,9 @@ function handleCallbackQuery(bot, callbackQuery) {
 }
 
 // 1-й шаг
-function sendRegionSelection(bot, chatId) {
+async function sendRegionSelection(bot, chatId) {
     try {
-        bot.sendMessage(chatId, 'Выберите ваш район:', {
+        await bot.sendMessage(chatId, 'Выберите ваш район:', {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
                     [{ text: 'Яккасарайский район', callback_data: 'supp_region_yakkasaray' }],
@@ -258,9 +257,32 @@ async function proceedToPreviousStep(bot, chatId) {
     }
 }
 
-// Переход к следующему или предыдущему шагу
+
+const messageUserAndAdmins = (chatId) => {
+    const user = suppUserInfo[chatId];    
+    let message = `Новый запрос поддержки от пользователя:\n\n`;
+    const fieldMapReverse = {
+        'login': 'Логин',
+        'region': 'Район',
+        'array_or_street': 'Массив или улица',
+        'house_number': 'Номер дома',
+        'apartment_number': 'Номер квартиры',
+        'name': 'Имя',
+        'phone': 'Телефон',
+        'question': 'Вопрос'
+    };
+
+    for (const key in user) {
+        if (key === 'scenario') continue;
+        const keyRussian = fieldMapReverse[key] || key;
+        message += `▪️ ${keyRussian}: ${user[key]}\n`;
+    }
+    return message
+}
+
 async function proceedToStep(bot, chatId, step) {
     try {
+        logMessage(`=== Поддержка === Шаг ${step}`);
         console.log('step =========', step);
         console.log('userStates =========', suppUserInfo[chatId]);
         // const scenario = suppUserInfo[chatId].scenario;
@@ -298,19 +320,13 @@ async function proceedToStep(bot, chatId, step) {
             case Steps.AWAITING_QUESTION:
                 await bot.sendMessage(chatId, 'Теперь можете ввести ваш вопрос.', backButton());
                 break;
-            case Steps.CHECK_DATA:
-                const user = suppUserInfo[chatId];
-                let message = `Проверьте ваши данные:\n\n`;
-                for (const key in user) {
-                    message += `▪️ ${key}: ${user[key]}\n`;
-                }
-    
-                bot.sendMessage(chatId, message, backButton_withAgree());
+            case Steps.CHECK_DATA:    
+                await bot.sendMessage(chatId, messageUserAndAdmins(chatId), backButton_withAgree());
                 break;
         
             case Steps.MESSAGE_WAS_SENT:
-                sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
-                bot.sendMessage(chatId, 'Ваш вопрос был отправлен.').then(() => {
+                await sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
+                await bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
                     userStates[chatId] = Steps.IDLE; // Возвращаем состояние в IDLE
                     console.log('userStates', userStates);
                     delete suppUserInfo[chatId];
@@ -337,14 +353,9 @@ function updateUserInfo(chatId, field, value) {
     suppUserInfo[chatId][field] = value;
 }
 
-function sendDataToAdmins(bot, chatId) {
+async function sendDataToAdmins(bot, chatId) {
     try {
-        const user = suppUserInfo[chatId];    
-        let message = `Новый запрос поддержки от пользователя:\n\n`;
-        for (const key in user) {
-            message += `▪️ ${key}: ${user[key]}\n`;
-        }
-        bot.sendMessage(GROUP_CHAT_ID, message);
+        await bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);

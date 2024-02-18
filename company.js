@@ -3,6 +3,9 @@ const menuHandler = require('./menuHandler');
 const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const menu = require('./menu');
+const i18n = require('./config/i18n');
+
+const { logMessage } = require('./logger');
 
 // Новые состояния для сценария подключения услуг юридических лиц
 const Steps = {
@@ -39,15 +42,15 @@ function handleUserInput(bot, msg) {
     const text = msg.text;
     switch (userStates[chatId]) {
       case Steps.AWAITING_NAME:
-        updateUserInfo(chatId, 'имя', text);
+        updateUserInfo(chatId, 'name', text);
         proceedToNextStep(bot, chatId);
         break;
       case Steps.AWAITING_PHONE:
-        updateUserInfo(chatId, 'телефон', text);
+        updateUserInfo(chatId, 'phone', text);
         proceedToNextStep(bot, chatId);
         break;
       case Steps.AWAITING_ADDRESS:
-        updateUserInfo(chatId, 'адрес', text);
+        updateUserInfo(chatId, 'address', text);
         proceedToNextStep(bot, chatId);
         break;
     }
@@ -85,28 +88,6 @@ function handleCallbackQuery(bot, callbackQuery) {
           case 'legal_entity':
             startLegalEntityConnectionScenario(bot, chatId);
             break;
-          // case 'region_yakkasaray':
-          // case 'region_mirabad':
-          // case 'region_sergeli':
-          // case 'region_yangihayot':
-          // case 'region_other':
-          //     updateUserInfo(chatId, 'region', data.replace('region_', ''));
-          //     proceedToNextStep(bot, chatId);
-          //     break;
-          // case 'vip_0':
-          // case 'vip_1':
-          // case 'vip_2':
-          // case 'vip_3':
-          // case 'vip_4':
-          // case 'vip_5':
-          // case 'vip_6':
-          // case 'vip_8':
-          // case 'gt_1':
-          // case 'gt_2':
-          // case 'gt_3':
-          //     updateUserInfo(chatId, 'tariff', data);
-          //     proceedToNextStep(bot, chatId);
-          //     break;
       }
     }
   } catch (e) {
@@ -157,9 +138,9 @@ function proceedToPreviousStep(bot, chatId) {
   }
 }
 
-// Обработка шагов для юридических лиц
 function proceedToStep(bot, chatId, step) {
   try {
+    logMessage(`=== Юр.лицо === Шаг ${step}`);
     switch (step) {
       case Steps.IDLE:
           menuHandler.displayConnectionOptions(bot, chatId);
@@ -175,7 +156,7 @@ function proceedToStep(bot, chatId, step) {
         break;
       case Steps.MESSAGE_WAS_SENT:
         sendDataToAdmins(bot, chatId);
-        bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
+        bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
           resetUserState(chatId);
         });
         break;
@@ -194,6 +175,24 @@ function clearFutureSteps(chatId, currentStep) {
   });
 }
 
+const messageUserAndAdmins = (chatId) => {
+  const user = companyUserInfo[chatId];    
+  let message = `Новый запрос поддержки от пользователя:\n\n`;
+  const fieldMapReverse = {
+      'address': 'Адрес',
+      'name': 'Имя',
+      'phone': 'Телефон',
+  };
+
+  for (const key in user) {
+      if (key === 'scenario') continue;
+      const keyRussian = fieldMapReverse[key] || key;
+      message += `▪️ ${keyRussian}: ${user[key]}\n`;
+  }
+  return message
+}
+
+
 // Обновление информации пользователя
 function updateUserInfo(chatId, field, value) {
   if (!companyUserInfo[chatId]) companyUserInfo[chatId] = {};
@@ -207,7 +206,7 @@ function sendDataToAdmins(bot, chatId) {
   for (const key in userInfo) {
     message += `▪️ ${key}: ${userInfo[key]}\n`;
   }
-  bot.sendMessage(GROUP_CHAT_ID, message);
+  bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
 }
 
 module.exports = { companyUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startLegalEntityConnectionScenario };

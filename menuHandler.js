@@ -3,6 +3,7 @@ const support = require('./support');
 const menu = require('./menu');
 const i18n = require('./config/i18n');
 const promotions = require('./promotions');
+const { sendTariffSelection } = require('./tariffSelection');
 
 function handleMenuAction(bot, action, msg) {
     try {
@@ -26,6 +27,9 @@ function handleMenuAction(bot, action, msg) {
                 break;
             case 'unsubscribe':
                 handleUnsubscribe(bot, msg);
+                break;
+            case 'tariffs':
+                sendTariffSelection(bot, msg.chat.id);
                 break;
         }
     } catch (e) {

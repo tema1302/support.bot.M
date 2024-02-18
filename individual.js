@@ -2,9 +2,9 @@ const menuHandler = require('./menuHandler');
 // const GROUP_CHAT_ID = '-4183932329'; // test
 const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
-const menu = require('./menu');
+const i18n = require('./config/i18n');
+const { logMessage } = require('./logger');
 
-// Новые состояния для сценария подключения услуг
 const Steps = {
   IDLE: 0,
   AWAITING_SERVICE_SELECTION: 1,
@@ -19,16 +19,14 @@ const Steps = {
   MESSAGE_WAS_SENT: 10,
 };
 
-let userStates = {}; // Хранит состояние для каждого пользователя
-let individualUserInfo = {}; // Глобальный объект для хранения информации о заявке физического лица
+let userStates = {};
+let individualUserInfo = {};
 
-// Функция для начала сценария подключения услуг
-function startConnectionScenario(bot, chatId) {
+async function startConnectionScenario(bot, chatId) {
   try {
     userStates[chatId] = Steps.IDLE;
     individualUserInfo[chatId] = {};
-    proceedToNextStep(bot, chatId);
-    
+    await proceedToNextStep(bot, chatId);
   } catch (e) {
     console.log("----------- ERROR -----------");
     console.log(e);
@@ -36,33 +34,33 @@ function startConnectionScenario(bot, chatId) {
   }
 }
 
-// Обработка ввода пользователя
-function handleUserInput(bot, msg) {
+async function handleUserInput(bot, msg) {
+  const chatId = msg.chat.id;
+  const text = msg.text;
   try {
-    const chatId = msg.chat.id;
-    if (!userStates[chatId] || userStates[chatId] === Steps.AWAITING_SERVICE_SELECTION) return;
-
-    const text = msg.text;
+    if (!userStates[chatId]) return;
+    
+    // Обновляем информацию пользователя в зависимости от текущего шага
     switch (userStates[chatId]) {
       case Steps.AWAITING_NAME:
-          updateUserInfo(chatId, 'имя', text);
-          proceedToNextStep(bot, chatId);
+          updateUserInfo(chatId, 'name', text);
+          await proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_PHONE:
-          updateUserInfo(chatId, 'телефон', text);
-          proceedToNextStep(bot, chatId);
+          updateUserInfo(chatId, 'phone', text);
+          await proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_STREET:
-          updateUserInfo(chatId, 'массив или улица', text);
-          proceedToNextStep(bot, chatId);
+          updateUserInfo(chatId, 'array_or_street', text);
+          await proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_HOUSE_NUMBER:
-          updateUserInfo(chatId, 'номер дома', text);
-          proceedToNextStep(bot, chatId);
+          updateUserInfo(chatId, 'house_number', text);
+          await proceedToNextStep(bot, chatId);
           break;
       case Steps.AWAITING_APARTMENT_NUMBER:
-          updateUserInfo(chatId, 'номер квартиры', text);
-          proceedToNextStep(bot, chatId);
+          updateUserInfo(chatId, 'apartment_number', text);
+          await proceedToNextStep(bot, chatId);
           break;
     }
   } catch (e) {
@@ -72,33 +70,43 @@ function handleUserInput(bot, msg) {
   }
 }
 
-// Обработка выбора услуги
-function handleCallbackQuery(bot, callbackQuery) {
-  try {
-    const msg = callbackQuery.message;
-    const chatId = msg.chat.id;
-    const data = callbackQuery.data;
+async function handleCallbackQuery(bot, callbackQuery) {
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+  const data = callbackQuery.data;
 
-    console.log(data);
+  try {
     if (data === 'go_back_individual') {
-      proceedToPreviousStep(bot, chatId);
+      await proceedToPreviousStep(bot, chatId);
     } else {
       switch (data) {
           case 'individual':
-            startConnectionScenario(bot, chatId);
+            await startConnectionScenario(bot, chatId);
             break;
           case 'internet':
           case 'cable-tv':
-              updateUserInfo(chatId, 'услуга', data);
-              proceedToNextStep(bot, chatId);
+              updateUserInfo(chatId, 'service', data);
+              await proceedToNextStep(bot, chatId);
               break;
           case 'ind_region_yakkasaray':
+              updateUserInfo(chatId, 'region', 'Яккасарайский район');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'ind_region_mirabad':
+              updateUserInfo(chatId, 'region', 'Мирабадский район');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'ind_region_sergeli':
+              updateUserInfo(chatId, 'region', 'Сергелийский район');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'ind_region_yangihayot':
+              updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'ind_region_other':
-              updateUserInfo(chatId, 'район', data.replace('ind_region_', ''));
-              proceedToNextStep(bot, chatId);
+              updateUserInfo(chatId, 'region', 'Другой район');
+              await proceedToNextStep(bot, chatId);
               break;
           case 'vip_0':
           case 'vip_1':
@@ -111,11 +119,11 @@ function handleCallbackQuery(bot, callbackQuery) {
           case 'gt_1':
           case 'gt_2':
           case 'gt_3':
-              updateUserInfo(chatId, 'тариф', data);
-              proceedToNextStep(bot, chatId);
+              updateUserInfo(chatId, 'tariff', data);
+              await proceedToNextStep(bot, chatId);
               break;
           case 'data_is_right':
-              proceedToNextStep(bot, chatId);
+              await proceedToNextStep(bot, chatId);
       }
     }
   } catch (e) {
@@ -125,9 +133,9 @@ function handleCallbackQuery(bot, callbackQuery) {
   }
 }
 
-function sendTariffSelection(bot, chatId) {
+async function sendTariffSelection(bot, chatId) {
   try {
-    bot.sendMessage(chatId, 'Выберите тариф:', {
+    await bot.sendMessage(chatId, 'Выберите тариф:', {
         reply_markup: JSON.stringify({
           inline_keyboard: [
             [{ text: 'VIP 0 — 🌇20 и 🌃3 Мбит/с, 60т сум', callback_data: 'vip_0' }],
@@ -153,12 +161,12 @@ function sendTariffSelection(bot, chatId) {
 
 
 // ++
-function proceedToNextStep(bot, chatId) {
+async function proceedToNextStep(bot, chatId) {
   try {
     if (userStates[chatId] < Steps.MESSAGE_WAS_SENT) {
-        userStates[chatId]++;
+      userStates[chatId]++;
     }
-  proceedToStep(bot, chatId, userStates[chatId]);
+    await proceedToStep(bot, chatId, userStates[chatId]);
   } catch (e) {
     console.log("----------- ERROR -----------");
     console.log(e);
@@ -166,15 +174,14 @@ function proceedToNextStep(bot, chatId) {
   }
 }
 
-// --
-function proceedToPreviousStep(bot, chatId) {
+async function proceedToPreviousStep(bot, chatId) {
   try {
     if (userStates[chatId] > Steps.IDLE) {
         clearFutureSteps(chatId, userStates[chatId]);
         userStates[chatId]--;
         console.log(userStates[chatId]);
     } 
-    proceedToStep(bot, chatId, userStates[chatId]);
+    await proceedToStep(bot, chatId, userStates[chatId]);
   } catch (e) {
     console.log("----------- ERROR -----------");
     console.log(e);
@@ -182,19 +189,42 @@ function proceedToPreviousStep(bot, chatId) {
   }
 }
 
-function proceedToStep(bot, chatId, step) {
+const messageUserAndAdmins = (chatId) => {
+  const user = individualUserInfo[chatId];    
+  let message = `Новый запрос поддержки от пользователя:\n\n`;
+  const fieldMapReverse = {
+      'region': 'Район',
+      'array_or_street': 'Массив или улица',
+      'house_number': 'Номер дома',
+      'apartment_number': 'Номер квартиры',
+      'name': 'Имя',
+      'phone': 'Телефон',
+      'service': 'Услуга',
+      'tariff': 'Тариф'
+  };
+
+  for (const key in user) {
+      if (key === 'scenario') continue;
+      const keyRussian = fieldMapReverse[key] || key;
+      message += `▪️ ${keyRussian}: ${user[key]}\n`;
+  }
+  return message
+}
+
+
+async function proceedToStep(bot, chatId, step) {
   try {
-    // Расширяем логику перехода к следующему шагу
+    logMessage(`=== Физ.лицо === Шаг ${step}`);
     console.log('proceedToStep individual', step);
     switch (step) {
         case Steps.IDLE:
             menuHandler.displayConnectionOptions(bot, chatId);
             break;
         case Steps.AWAITING_NAME:
-            bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
+            await bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
             break;
         case Steps.AWAITING_SERVICE_SELECTION:
-          bot.sendMessage(chatId, 'Что вас интересует?', {
+          await bot.sendMessage(chatId, 'Что вас интересует?', {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
                     [{ text: 'Интернет', callback_data: 'internet' }],
@@ -205,35 +235,30 @@ function proceedToStep(bot, chatId, step) {
         });
             break;
         case Steps.AWAITING_PHONE:
-            bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
+            await bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
             break;
         case Steps.AWAITING_REGION_SELECTION:
             sendRegionSelection(bot, chatId); // Используйте уже существующую функцию для выбора района
             break;
         case Steps.AWAITING_STREET:
-            bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
+            await bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
             break;
         case Steps.AWAITING_HOUSE_NUMBER:
-            bot.sendMessage(chatId, 'Введите номер дома.', backButton());
+            await bot.sendMessage(chatId, 'Введите номер дома.', backButton());
             break;
         case Steps.AWAITING_APARTMENT_NUMBER:
-            bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
+            await bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
             break;
         case Steps.AWAITING_TARIFF_SELECTION:
             sendTariffSelection(bot, chatId); // Функция для выбора тарифа
             break;
         case Steps.CHECK_DATA:
-            const user = individualUserInfo[chatId];
-            let message = `Проверьте ваши данные:\n\n`;
-            for (const key in user) {
-                message += `▪️ ${key} — ${user[key]}\n`;
-            }
 
-            bot.sendMessage(chatId, message, backButton_withAgree());
+            await bot.sendMessage(chatId, messageUserAndAdmins(chatId), backButton_withAgree());
             break;
           case Steps.MESSAGE_WAS_SENT:
             sendDataToAdmins(bot, chatId); // Функция отправки данных администраторам
-            bot.sendMessage(chatId, 'Ваша заявка была отправлена. Спасибо!').then(() => {
+            await bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
               resetUserState(chatId); // Сброс состояния и информации пользователя
             });
             break;
@@ -287,10 +312,10 @@ function clearFutureSteps(chatId, currentStep) {
   });
 }
 
-// 1-й шаг
-function sendRegionSelection(bot, chatId) {
+
+async function sendRegionSelection(bot, chatId) {
   try {
-      bot.sendMessage(chatId, 'Выберите ваш район:', {
+      await bot.sendMessage(chatId, 'Выберите ваш район:', {
           reply_markup: JSON.stringify({
               inline_keyboard: [
                   [{ text: 'Яккасарайский район', callback_data: 'ind_region_yakkasaray' }],
@@ -316,15 +341,9 @@ function updateUserInfo(chatId, field, value) {
   individualUserInfo[chatId][field] = value;
 }
 
-// Отправка данных администраторам
-function sendDataToAdmins(bot, chatId) {
-  const user = individualUserInfo[chatId];
-  let message = `👨🏻‍🦲Новая заявка на подключение услуг Физ. лица:\n\n`;
-  for (const key in user) {
-      message += `▪️ ${key} — ${user[key]}\n`;
-  }
-  // bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
-  bot.sendMessage(GROUP_CHAT_ID, message);
+async function sendDataToAdmins(bot, chatId) {
+  // await bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
+  await bot.sendMessage(GROUP_CHAT_ID, messageUserAndAdmins(chatId));
 }
 
 module.exports = { individualUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startConnectionScenario };
