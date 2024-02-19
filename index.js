@@ -47,24 +47,24 @@ const commands = [
       description: i18n.__('support')
   },
   {
-      command: "channel",
-      description: i18n.__('channel')
-  },
-  {
-      command: "about",
-      description: i18n.__('about_us')
+      command: "tariffs",
+      description: i18n.__('tarrifs')
   },
   {
       command: "promotions",
       description: i18n.__('promotions')
   },
   {
-      command: "unsubscribe",
-      description: i18n.__('unsubscribe')
+      command: "about",
+      description: i18n.__('about_us')
   },
   {
-      command: "tariffs",
-      description: 'Тарифы'
+      command: "channel",
+      description: i18n.__('channel')
+  },
+  {
+      command: "unsubscribe",
+      description: i18n.__('unsubscribe')
   }
 ];
 

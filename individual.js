@@ -4,9 +4,6 @@ const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const i18n = require('./config/i18n');
 const { logMessage } = require('./logger');
-const menuHandler = require('./menuHandler'); // Import the menuHandler module
-const { sendRegionSelection, sendTariffSelection, sendDataToAdmins } = require('./helpers'); // Import the necessary helper functions
-const i18n = require('i18n'); // Import the i18n module
 
 const Steps = {
   IDLE: 0,
@@ -197,7 +194,7 @@ const messageUserAndAdmins = (chatId, startMessage) => {
   let message = `${startMessage}:\n\n`;
   const fieldMapReverse = {
       'region': 'Район',
-      'array_or_street': 'Массив или улица',
+      'array_or_street': 'Квартал или улица',
       'house_number': 'Номер дома',
       'apartment_number': 'Номер квартиры',
       'name': 'Имя',
@@ -224,7 +221,7 @@ async function proceedToStep(bot, chatId, step) {
       menuHandler.displayConnectionOptions(bot, chatId);
       break;
     case Steps.AWAITING_NAME:
-      bot.sendMessage(chatId, 'Введите ваше имя.', backButton_withAgree());
+      bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
       break;
     case Steps.AWAITING_SERVICE_SELECTION:
       bot.sendMessage(chatId, 'Что вас интересует?', {
@@ -238,22 +235,22 @@ async function proceedToStep(bot, chatId, step) {
     });
       break;
     case Steps.AWAITING_PHONE:
-      bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton_withAgree());
+      bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
       break;
     case Steps.AWAITING_REGION_SELECTION:
-      sendRegionSelection(bot, chatId); // Use the existing sendRegionSelection function for region selection
+      sendRegionSelection(bot, chatId);
       break;
     case Steps.AWAITING_STREET:
-      bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton_withAgree());
+      bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
       break;
     case Steps.AWAITING_HOUSE_NUMBER:
-      bot.sendMessage(chatId, 'Введите номер дома.', backButton_withAgree());
+      bot.sendMessage(chatId, 'Введите номер дома.', backButton());
       break;
     case Steps.AWAITING_APARTMENT_NUMBER:
-      bot.sendMessage(chatId, 'Введите номер квартиры.', backButton_withAgree());
+      bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
       break;
     case Steps.AWAITING_TARIFF_SELECTION:
-      sendTariffSelection(bot, chatId); // Use the existing sendTariffSelection function for tariff selection
+      sendTariffSelection(bot, chatId); 
       break;
     case Steps.CHECK_DATA:
       console.log('Steps.CHECK_DATA');
@@ -264,9 +261,9 @@ async function proceedToStep(bot, chatId, step) {
       await bot.sendMessage(chatId, messageU, backButton_withAgree());
       break;
     case Steps.MESSAGE_WAS_SENT:
-      await sendDataToAdmins(bot, chatId); // Use the existing sendDataToAdmins function to send data to admins
+      await sendDataToAdmins(bot, chatId);
       bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
-        resetUserState(chatId); // Reset user state and information
+        resetUserState(chatId); 
       });
       break;
     default:
@@ -279,11 +276,10 @@ async function proceedToStep(bot, chatId, step) {
   }
 }
 
-function backButton_withAgree() {
+function backButton() {
   return {
     reply_markup: JSON.stringify({
       inline_keyboard: [
-      [{ text: 'Данные верны', callback_data: 'data_is_right' }],
       [{ text: 'Назад', callback_data: 'go_back_individual' }],
       ]
     })
@@ -293,7 +289,7 @@ function backButton_withAgree() {
   return {
       reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'Данные верны', callback_data: 'data_is_right' }],
+            [{ text: 'Да, все правильно', callback_data: 'data_is_right' }],
             [{ text: 'Назад', callback_data: 'go_back_individual' }],
           ]
       })

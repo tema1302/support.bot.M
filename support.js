@@ -122,7 +122,7 @@ function backButton_withAgree() {
     return {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Данные верны', callback_data: 'data_is_right_supp' }],
+                [{ text: 'Да, все правильно', callback_data: 'data_is_right_supp' }],
                 [{ text: 'Назад', callback_data: 'go_back' }],
             ]
         })
@@ -249,7 +249,7 @@ async function proceedToPreviousStep(bot, chatId) {
                 userStates[chatId]--;
             }
         }
-        await proceedToStep(bot, chatId, userStates[chatId]);
+        await proceedToStep(bot, chatId , userStates[chatId]);
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);
@@ -264,7 +264,7 @@ const messageUserAndAdmins = (chatId, startMessage) => {
     const fieldMapReverse = {
         'login': 'Логин',
         'region': 'Район',
-        'array_or_street': 'Массив или улица',
+        'array_or_street': 'Квартал или улица',
         'house_number': 'Номер дома',
         'apartment_number': 'Номер квартиры',
         'name': 'Имя',
