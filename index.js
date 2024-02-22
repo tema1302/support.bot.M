@@ -101,15 +101,10 @@ try {
     }
   });
   
-  process.on('unhandledRejection', (reason, promise) => {
-    console.error('Неперехваченное отклонение обещания:', promise, 'причина:', reason);
+  process.on('unhandledRejection', (reason) => {
+    console.error('причина:', reason.response.body);
     // здесь логика обработки
   });
-  
-  // process.on('uncaughtException', (error) => {
-  //   console.error('Неперехваченное исключение:', error);
-  //   // здесь логика обработки
-  // });
   
 
   languageAndInit.initialize(bot);

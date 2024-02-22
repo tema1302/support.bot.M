@@ -1,11 +1,10 @@
 const support = require('./support');
-// const connectionHandler = require('./connectionHandler');
 const menu = require('./menu');
 const i18n = require('./config/i18n');
 const promotions = require('./promotions');
 const { sendTariffSelection } = require('./tariffSelection');
 
-function handleMenuAction(bot, action, msg) {
+function handleMenuAction(bot, chatId, action, msg) {
     try {
         switch (action) {
             case 'connect':
@@ -20,7 +19,7 @@ function handleMenuAction(bot, action, msg) {
                 handleChannelInfo(bot, msg);
                 break;
             case 'promotions':
-                promotions.displayPromotions(bot, msg.chat.id);
+                promotions.displayPromotions(bot, chatId);
                 break;
             case 'about_us':
                 displayAboutInfo(bot, msg);
@@ -29,8 +28,30 @@ function handleMenuAction(bot, action, msg) {
                 handleUnsubscribe(bot, msg);
                 break;
             case 'tariffs':
-                sendTariffSelection(bot, msg.chat.id);
+                sendTariffSelection(bot, chatId);
                 break;
+            case 'russian':
+                console.log('russian');
+                i18n.setLocale('ru');
+                menu.displayMenu(bot, chatId);
+                break;
+            case 'uzbek':
+                i18n.setLocale('uz');
+                menu.displayMenu(bot, chatId);
+                break;
+                // акции
+            case 'back_to_promotions':
+                promotions.displayPromotions(bot, chatId);
+                break;
+            case 'bring_a_friend':
+            case 'promo_300':
+            case 'free_cable':
+                promotions.handlePromotionSelection(bot, chatId, action);
+                break;
+            case 'back_to_menu':
+                menu.displayMenu(bot, chatId);
+                break;
+
         }
     } catch (e) {
         console.log("----------- ERROR -----------");
@@ -51,9 +72,9 @@ function displayConnectionOptions(bot, msgOrChatId) {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
                     // отрабатывает в menuHandler.js
-                    [{ text: i18n.__('legal_entity_option'), callback_data: 'legal_entity' }],
-                    [{ text: i18n.__('individual_option'), callback_data: 'individual' }],
-                    [{ text: i18n.__('back'), callback_data: 'back_to_menu' }],
+                    [{ text: i18n.__('legal_entity_option'), callback_data: 'company handleCallbackQuery legal_entity' }],
+                    [{ text: i18n.__('individual_option'), callback_data: 'individual handleCallbackQuery individual' }],
+                    [{ text: i18n.__('back'), callback_data: 'menuHandler handleMenuAction back_to_menu' }],
                 ]
             })
         };
@@ -77,7 +98,7 @@ function displayAboutInfo(bot, msg) {
         parse_mode: 'HTML',
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Назад', callback_data: 'back_to_menu' }]
+                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };
@@ -91,7 +112,7 @@ function handleChannelInfo(bot, msg) {
         parse_mode: 'HTML',
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Назад', callback_data: 'back_to_menu' }]
+                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };

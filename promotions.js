@@ -6,10 +6,10 @@ function displayPromotions(bot, chatId) {
     const options = {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Приведи друга 🤝', callback_data: 'bring_a_friend' }],
-                [{ text: 'Акция 300 💰', callback_data: 'promo_300' }],
-                [{ text: 'Кабель бесплатно 🆓', callback_data: 'free_cable' }],
-                [{ text: 'Назад', callback_data: 'back_to_menu' }]
+                [{ text: 'Приведи друга 🤝', callback_data: 'menuHandler handleMenuAction bring_a_friend' }],
+                [{ text: 'Акция 300 💰', callback_data: 'menuHandler handleMenuAction promo_300' }],
+                [{ text: 'Кабель бесплатно 🆓', callback_data: 'menuHandler handleMenuAction free_cable' }],
+                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };
@@ -20,9 +20,7 @@ function displayPromotions(bot, chatId) {
     console.log("----------- /ERROR -----------");
   }
 }
-function handlePromotionSelection(bot, callbackQuery) {
-  const chatId = callbackQuery.message.chat.id;
-  const data = callbackQuery.data;
+function handlePromotionSelection(bot, chatId, action) {
   
   const promotions = {
     'bring_a_friend': {
@@ -56,7 +54,7 @@ function handlePromotionSelection(bot, callbackQuery) {
     }
   };
 
-  const promotion = promotions[data];
+  const promotion = promotions[action];
 
   if (promotion) {
     bot.sendPhoto(chatId, promotion.image, {
@@ -64,12 +62,12 @@ function handlePromotionSelection(bot, callbackQuery) {
       parse_mode: "HTML",
       reply_markup: JSON.stringify({
         inline_keyboard: [
-          [{ text: 'Назад к акциям', callback_data: 'back_to_promotions' }]
+          [{ text: 'Назад к акциям', callback_data: 'menuHandler handleMenuAction back_to_promotions' }]
         ]
       })
     });
   } else {
-    console.log("Непредвиденный выбор акции:", data);
+    console.log("Непредвиденный выбор акции:", action);
   }
 }
 

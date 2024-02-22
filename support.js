@@ -1,7 +1,7 @@
 let userStates = {}; // Хранит состояние для каждого пользователя
 let suppUserInfo = {}; // Глобальный объект для хранения информации о пользователе
-// const GROUP_CHAT_ID = '-4183932329'; // test
-const GROUP_CHAT_ID = '-4183415492'; // test test
+const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const { logMessage } = require('./logger');
 const i18n = require('./config/i18n');
@@ -45,9 +45,9 @@ async function handleSupportRequest(bot, chatId) {
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: '✍️ Написать логин', callback_data: 'write_login' }],
-                    [{ text: i18n.__('forgot_login'), callback_data: 'forgot_login' }],
-                    [{ text: 'Назад в меню', callback_data: 'back_to_menu' }],
+                    [{ text: '✍️ Написать логин', callback_data: 'support handleCallbackQuery write_login' }],
+                    [{ text: i18n.__('forgot_login'), callback_data: 'support handleCallbackQuery forgot_login' }],
+                    [{ text: 'Назад в меню', callback_data: 'menuHandler handleMenuAction back_to_menu' }],
                 ]
             })
         };
@@ -113,7 +113,7 @@ function backButton() {
     return {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Назад', callback_data: 'go_back' }]
+                [{ text: 'Назад', callback_data: 'support handleCallbackQuery go_back' }]
             ]
         })
     };
@@ -122,43 +122,38 @@ function backButton_withAgree() {
     return {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Да, все правильно', callback_data: 'data_is_right_supp' }],
-                [{ text: 'Назад', callback_data: 'go_back' }],
+                [{ text: 'Да, все правильно', callback_data: 'support handleCallbackQuery data_is_right_supp' }],
+                [{ text: 'Назад', callback_data: 'support handleCallbackQuery go_back' }],
             ]
         })
     };
 }
 
 // отработка кнопок внутри сценария "поддержка"
-async function handleCallbackQuery(bot, callbackQuery) {
+async function handleCallbackQuery(bot, chatId, action, msg) {
     try {
-        // console.log('Проверка callbackQuery: ', callbackQuery);
-        const msg = callbackQuery.message;
-        const chatId = msg.chat.id;
-        const data = callbackQuery.data; // название кнопки, которую нажал пользователь
         // Обработка кнопки "Назад"
-        if (data === 'go_back') {
+        if (action === 'go_back') {
             await proceedToPreviousStep(bot, chatId);
         } else {
-            // Обработка других callback_data
-            switch (data) {
-                case 'supp_region_yakkasaray':
+            switch (action) {
+                case 'region_yakkasaray':
                     updateUserInfo(chatId, 'region', 'Яккасарайский район');
                     await proceedToNextStep(bot, chatId);
                     break;
-                case 'supp_region_mirabad':
+                case 'region_mirabad':
                     updateUserInfo(chatId, 'region', 'Мирабадский район');
                     await proceedToNextStep(bot, chatId);
                     break;
-                case 'supp_region_sergeli':
+                case 'region_sergeli':
                     updateUserInfo(chatId, 'region', 'Сергелийский район');
                     await proceedToNextStep(bot, chatId);
                     break;
-                case 'supp_region_yangihayot':
+                case 'region_yangihayot':
                     updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
                     await proceedToNextStep(bot, chatId);
                     break;
-                case 'supp_region_other':
+                case 'region_other':
                     updateUserInfo(chatId, 'region', 'Другой район');
                     await proceedToNextStep(bot, chatId);
                     break;
@@ -190,12 +185,12 @@ async function sendRegionSelection(bot, chatId) {
         await bot.sendMessage(chatId, 'Выберите ваш район:', {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: 'Яккасарайский район', callback_data: 'supp_region_yakkasaray' }],
-                    [{ text: 'Мирабадский район', callback_data: 'supp_region_mirabad' }],
-                    [{ text: 'Сергелийский район', callback_data: 'supp_region_sergeli' }],
-                    [{ text: 'Янгиҳаётский район', callback_data: 'supp_region_yangihayot' }],
-                    [{ text: 'Другой район', callback_data: 'supp_region_other' }],
-                    [{ text: 'Назад', callback_data: 'go_back' }]
+                    [{ text: 'Яккасарайский район', callback_data: 'support handleCallbackQuery region_yakkasaray' }],
+                    [{ text: 'Мирабадский район', callback_data: 'support handleCallbackQuery region_mirabad' }],
+                    [{ text: 'Сергелийский район', callback_data: 'support handleCallbackQuery region_sergeli' }],
+                    [{ text: 'Янгиҳаётский район', callback_data: 'support handleCallbackQuery region_yangihayot' }],
+                    [{ text: 'Другой район', callback_data: 'support handleCallbackQuery region_other' }],
+                    [{ text: 'Назад', callback_data: 'support handleCallbackQuery go_back' }]
                 ]
             })
         });

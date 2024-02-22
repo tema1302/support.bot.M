@@ -1,6 +1,6 @@
 const menuHandler = require('./menuHandler');
-// const GROUP_CHAT_ID = '-4183932329'; // test
-const GROUP_CHAT_ID = '-4183415492'; // test test
+const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const menu = require('./menu');
 const i18n = require('./config/i18n');
@@ -65,7 +65,7 @@ function backButton() {
   return {
       reply_markup: JSON.stringify({
           inline_keyboard: [
-              [{ text: 'Назад', callback_data: 'go_back_company' }]
+              [{ text: 'Назад', callback_data: 'company handleCallbackQuery go_back_company' }]
           ]
       })
   };
@@ -73,18 +73,14 @@ function backButton() {
 
 
 // Обработка выбора услуги
-function handleCallbackQuery(bot, callbackQuery) {
+function handleCallbackQuery(bot, chatId, action, msg) {
   try {
-    const msg = callbackQuery.message;
-    const chatId = msg.chat.id;
-    const data = callbackQuery.data;
-
-    console.log(data);
-    if (data === 'go_back_company') {
+    console.log(action);
+    if (action === 'go_back_company') {
       console.log('loggg go_back_company');
       proceedToPreviousStep(bot, chatId);
     } else {
-      switch (data) {
+      switch (action) {
           case 'legal_entity':
             startLegalEntityConnectionScenario(bot, chatId);
             break;

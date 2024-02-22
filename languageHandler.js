@@ -3,8 +3,8 @@ function displayLanguageOptions(bot, msg) {
     const options = { // Опции для метода отправки сообщения
         reply_markup: JSON.stringify({ // JSON-строка для настройки клавиатуры
             inline_keyboard: [
-                [{ text: '🇺🇿 o’zbek tili', callback_data: 'uzbek' }],
-                [{ text: '🇷🇺 Русский', callback_data: 'russian' }]
+                [{ text: '🇺🇿 o’zbek tili', callback_data: 'menuHandler handleMenuAction uzbek' }],
+                [{ text: '🇷🇺 Русский', callback_data: 'menuHandler handleMenuAction russian' }]
             ]
         })  
     };

@@ -1,6 +1,6 @@
 const menuHandler = require('./menuHandler');
-// const GROUP_CHAT_ID = '-4183932329'; // test
-const GROUP_CHAT_ID = '-4183415492'; // test test
+const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183415492'; // test test
 // const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const i18n = require('./config/i18n');
 const { logMessage } = require('./logger');
@@ -70,41 +70,37 @@ async function handleUserInput(bot, msg) {
   }
 }
 
-async function handleCallbackQuery(bot, callbackQuery) {
-  const msg = callbackQuery.message;
-  const chatId = msg.chat.id;
-  const data = callbackQuery.data;
-
+async function handleCallbackQuery(bot, chatId, action, msg) {
   try {
-    if (data === 'go_back_individual') {
+    if (action === 'go_back') {
       await proceedToPreviousStep(bot, chatId);
     } else {
-      switch (data) {
+      switch (action) {
           case 'individual':
             await startConnectionScenario(bot, chatId);
             break;
           case 'internet':
           case 'cable-tv':
-              updateUserInfo(chatId, 'service', data);
+              updateUserInfo(chatId, 'service', action);
               await proceedToNextStep(bot, chatId);
               break;
-          case 'ind_region_yakkasaray':
+          case 'region_yakkasaray':
               updateUserInfo(chatId, 'region', 'Яккасарайский район');
               await proceedToNextStep(bot, chatId);
               break;
-          case 'ind_region_mirabad':
+          case 'region_mirabad':
               updateUserInfo(chatId, 'region', 'Мирабадский район');
               await proceedToNextStep(bot, chatId);
               break;
-          case 'ind_region_sergeli':
+          case 'region_sergeli':
               updateUserInfo(chatId, 'region', 'Сергелийский район');
               await proceedToNextStep(bot, chatId);
               break;
-          case 'ind_region_yangihayot':
+          case 'region_yangihayot':
               updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
               await proceedToNextStep(bot, chatId);
               break;
-          case 'ind_region_other':
+          case 'region_other':
               updateUserInfo(chatId, 'region', 'Другой район');
               await proceedToNextStep(bot, chatId);
               break;
@@ -119,7 +115,7 @@ async function handleCallbackQuery(bot, callbackQuery) {
           case 'gt_1':
           case 'gt_2':
           case 'gt_3':
-              updateUserInfo(chatId, 'tariff', data);
+              updateUserInfo(chatId, 'tariff', action);
               await proceedToNextStep(bot, chatId);
               break;
           case 'data_is_right':
@@ -138,17 +134,17 @@ async function sendTariffSelection(bot, chatId) {
     await bot.sendMessage(chatId, 'Выберите тариф:', {
         reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'VIP 0 — 🌇20 и 🌃3 Мбит/с, 60т сум', callback_data: 'vip_0' }],
-            [{ text: 'VIP 1 — 🌇100 и 🌃7 Мбит/с, 85т сум', callback_data: 'vip_1' }],
-            [{ text: 'VIP 2 — 🌇100 и 🌃15 Мбит/с, 95т сум', callback_data: 'vip_2' }],
-            [{ text: 'VIP 3 — 🌇100 и 🌃20 Мбит/с, 110т сум', callback_data: 'vip_3' }],
-            [{ text: 'VIP 4 — 🌇100 и 🌃50 Мбит/с, 140т сум', callback_data: 'vip_4' }],
-            [{ text: 'VIP 5 — 🌇100 и 🌃60 Мбит/с, 165т сум', callback_data: 'vip_5' }],
-            [{ text: 'VIP 6 — 🌇100 и 🌃75 Мбит/с, 180т сум', callback_data: 'vip_6' }],
-            [{ text: 'VIP 8 — 🌇100 и 🌃100 Мбит/с, 230т сум', callback_data: 'vip_8' }],
-            [{ text: 'GT 1 — 🌇200 и 🌃50 Мбит/с, 165т сум', callback_data: 'gt_1' }],
-            [{ text: 'GT 2 — 🌇200 и 🌃75 Мбит/с, 250т сум', callback_data: 'gt_2' }],
-            [{ text: 'GT 3 — 🌇200 и 🌃100 Мбит/с, 300т сум', callback_data: 'gt_3' }],
+            [{ text: 'VIP 0 — 🌇20 и 🌃3 Мбит/с, 60т сум', callback_data: 'individual handleCallbackQuery vip_0' }],
+            [{ text: 'VIP 1 — 🌇100 и 🌃7 Мбит/с, 85т сум', callback_data: 'individual handleCallbackQuery vip_1' }],
+            [{ text: 'VIP 2 — 🌇100 и 🌃15 Мбит/с, 95т сум', callback_data: 'individual handleCallbackQuery vip_2' }],
+            [{ text: 'VIP 3 — 🌇100 и 🌃20 Мбит/с, 110т сум', callback_data: 'individual handleCallbackQuery vip_3' }],
+            [{ text: 'VIP 4 — 🌇100 и 🌃50 Мбит/с, 140т сум', callback_data: 'individual handleCallbackQuery vip_4' }],
+            [{ text: 'VIP 5 — 🌇100 и 🌃60 Мбит/с, 165т сум', callback_data: 'individual handleCallbackQuery vip_5' }],
+            [{ text: 'VIP 6 — 🌇100 и 🌃75 Мбит/с, 180т сум', callback_data: 'individual handleCallbackQuery vip_6' }],
+            [{ text: 'VIP 8 — 🌇100 и 🌃100 Мбит/с, 230т сум', callback_data: 'individual handleCallbackQuery vip_8' }],
+            [{ text: 'GT 1 — 🌇200 и 🌃50 Мбит/с, 165т сум', callback_data: 'individual handleCallbackQuery gt_1' }],
+            [{ text: 'GT 2 — 🌇200 и 🌃75 Мбит/с, 250т сум', callback_data: 'individual handleCallbackQuery gt_2' }],
+            [{ text: 'GT 3 — 🌇200 и 🌃100 Мбит/с, 300т сум', callback_data: 'individual handleCallbackQuery gt_3' }],
           ]
         })
     });
@@ -164,7 +160,11 @@ async function sendTariffSelection(bot, chatId) {
 async function proceedToNextStep(bot, chatId) {
   try {
     if (userStates[chatId] < Steps.MESSAGE_WAS_SENT) {
-      userStates[chatId]++;
+      if (userStates[chatId] === Steps.AWAITING_APARTMENT_NUMBER && individualUserInfo[chatId]?.service === 'cable-tv') {
+        userStates[chatId] = Steps.CHECK_DATA;
+      } else {
+        userStates[chatId]++;
+      }
     }
     await proceedToStep(bot, chatId, userStates[chatId]);
   } catch (e) {
@@ -178,8 +178,11 @@ async function proceedToPreviousStep(bot, chatId) {
   try {
     if (userStates[chatId] > Steps.IDLE) {
         clearFutureSteps(chatId, userStates[chatId]);
-        userStates[chatId]--;
-        console.log(userStates[chatId]);
+        if (userStates[chatId] === Steps.CHECK_DATA && individualUserInfo[chatId]?.service === 'cable-tv') {
+          userStates[chatId] = Steps.AWAITING_APARTMENT_NUMBER;
+        } else {
+          userStates[chatId]--;
+        }
     } 
     await proceedToStep(bot, chatId, userStates[chatId]);
   } catch (e) {
@@ -202,77 +205,88 @@ const messageUserAndAdmins = (chatId, startMessage) => {
       'service': 'Услуга',
       'tariff': 'Тариф'
   };
+  const serviceLocalization = {
+    'internet': i18n.__('internet'),
+    'cable-tv': i18n.__('cable-tv')
+  };
+
 
   for (const key in user) {
       if (key === 'scenario') continue;
       const keyRussian = fieldMapReverse[key] || key;
-      message += `▪️ ${keyRussian}: ${user[key]}\n`;
+
+      let value = user[key];
+      if (key === 'service') {
+        value = serviceLocalization[value] || value;
+      }
+      message += `▪️ ${keyRussian}: ${value}\n`;
   }
   return message;
 }
 
 
 async function proceedToStep(bot, chatId, step) {
+  console.log('userStates[chatId]', userStates[chatId]);
   try {
-  logMessage(`=== Физ.лицо === Шаг ${step}`);
-  console.log('proceedToStep individual', step);
-  switch (step) {
-    case Steps.IDLE:
-      menuHandler.displayConnectionOptions(bot, chatId);
-      break;
-    case Steps.AWAITING_NAME:
-      bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
-      break;
-    case Steps.AWAITING_SERVICE_SELECTION:
-      bot.sendMessage(chatId, 'Что вас интересует?', {
-      reply_markup: JSON.stringify({
-        inline_keyboard: [
-          [{ text: 'Интернет', callback_data: 'internet' }],
-          [{ text: 'Кабельное ТВ', callback_data: 'cable-tv' }],
-          [{ text: 'Назад', callback_data: 'go_back_individual' }]
-        ]
-      })
-    });
-      break;
-    case Steps.AWAITING_PHONE:
-      bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
-      break;
-    case Steps.AWAITING_REGION_SELECTION:
-      sendRegionSelection(bot, chatId);
-      break;
-    case Steps.AWAITING_STREET:
-      bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
-      break;
-    case Steps.AWAITING_HOUSE_NUMBER:
-      bot.sendMessage(chatId, 'Введите номер дома.', backButton());
-      break;
-    case Steps.AWAITING_APARTMENT_NUMBER:
-      bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
-      break;
-    case Steps.AWAITING_TARIFF_SELECTION:
-      sendTariffSelection(bot, chatId); 
-      break;
-    case Steps.CHECK_DATA:
-      console.log('Steps.CHECK_DATA');
-      const startMessage = 'Проверьте ваши данные';
-      
-      const messageU = messageUserAndAdmins(chatId, startMessage);
-      console.log(messageU)
-      await bot.sendMessage(chatId, messageU, backButton_withAgree());
-      break;
-    case Steps.MESSAGE_WAS_SENT:
-      await sendDataToAdmins(bot, chatId);
-      bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
-        resetUserState(chatId); 
+    logMessage(`=== Физ.лицо === Шаг ${step}`);
+    console.log('proceedToStep individual', step);
+    switch (step) {
+      case Steps.IDLE:
+        menuHandler.displayConnectionOptions(bot, chatId);
+        break;
+      case Steps.AWAITING_NAME:
+        bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
+        break;
+      case Steps.AWAITING_SERVICE_SELECTION:
+        bot.sendMessage(chatId, 'Что вас интересует?', {
+        reply_markup: JSON.stringify({
+          inline_keyboard: [
+            [{ text: 'Интернет', callback_data: 'individual handleCallbackQuery internet' }],
+            [{ text: 'Кабельное ТВ', callback_data: 'individual handleCallbackQuery cable-tv' }],
+            [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }]
+          ]
+        })
       });
-      break;
-    default:
-      break;
+        break;
+      case Steps.AWAITING_PHONE:
+        bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
+        break;
+      case Steps.AWAITING_REGION_SELECTION:
+        sendRegionSelection(bot, chatId);
+        break;
+      case Steps.AWAITING_STREET:
+        bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
+        break;
+      case Steps.AWAITING_HOUSE_NUMBER:
+        bot.sendMessage(chatId, 'Введите номер дома.', backButton());
+        break;
+      case Steps.AWAITING_APARTMENT_NUMBER:
+        bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
+        break;
+      case Steps.AWAITING_TARIFF_SELECTION:
+        sendTariffSelection(bot, chatId); 
+        break;
+      case Steps.CHECK_DATA:
+        console.log('Steps.CHECK_DATA');
+        const startMessage = 'Проверьте ваши данные';
+        
+        const messageU = messageUserAndAdmins(chatId, startMessage);
+        console.log(messageU)
+        await bot.sendMessage(chatId, messageU, backButton_withAgree());
+        break;
+      case Steps.MESSAGE_WAS_SENT:
+        await sendDataToAdmins(bot, chatId);
+        bot.sendMessage(chatId, i18n.__('thanks_wait')).then(() => {
+          resetUserState(chatId); 
+        });
+        break;
+      default:
+        break;
   }
   } catch (e) {
-  console.log("----------- ERROR -----------");
-  console.log(e);
-  console.log("----------- /ERROR -----------");
+    console.log("----------- ERROR -----------");
+    console.log(e);
+    console.log("----------- /ERROR -----------");
   }
 }
 
@@ -280,7 +294,7 @@ function backButton() {
   return {
     reply_markup: JSON.stringify({
       inline_keyboard: [
-      [{ text: 'Назад', callback_data: 'go_back_individual' }],
+      [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }],
       ]
     })
   };
@@ -289,8 +303,8 @@ function backButton_withAgree() {
   return {
       reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'Да, все правильно', callback_data: 'data_is_right' }],
-            [{ text: 'Назад', callback_data: 'go_back_individual' }],
+            [{ text: 'Да, все правильно', callback_data: 'individual handleCallbackQuery data_is_right' }],
+            [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }],
           ]
       })
   };
@@ -321,12 +335,12 @@ async function sendRegionSelection(bot, chatId) {
       await bot.sendMessage(chatId, 'Выберите ваш район:', {
           reply_markup: JSON.stringify({
               inline_keyboard: [
-                  [{ text: 'Яккасарайский район', callback_data: 'ind_region_yakkasaray' }],
-                  [{ text: 'Мирабадский район', callback_data: 'ind_region_mirabad' }],
-                  [{ text: 'Сергелийский район', callback_data: 'ind_region_sergeli' }],
-                  [{ text: 'Янгиҳаётский район', callback_data: 'ind_region_yangihayot' }],
-                  [{ text: 'Другой район', callback_data: 'ind_region_other' }],
-                  [{ text: 'Назад', callback_data: 'go_back' }]
+                  [{ text: 'Яккасарайский район', callback_data: 'individual handleCallbackQuery region_yakkasaray' }],
+                  [{ text: 'Мирабадский район', callback_data: 'individual handleCallbackQuery region_mirabad' }],
+                  [{ text: 'Сергелийский район', callback_data: 'individual handleCallbackQuery region_sergeli' }],
+                  [{ text: 'Янгиҳаётский район', callback_data: 'individual handleCallbackQuery region_yangihayot' }],
+                  [{ text: 'Другой район', callback_data: 'individual handleCallbackQuery region_other' }],
+                  [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }]
               ]
           })
       });
