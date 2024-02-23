@@ -1,14 +1,15 @@
+const i18n = require('./config/i18n');
 function displayLanguageOptions(bot, msg) {
     const chatId = msg.chat.id;
-    const options = { // Опции для метода отправки сообщения
-        reply_markup: JSON.stringify({ // JSON-строка для настройки клавиатуры
+    const options = { 
+        reply_markup: JSON.stringify({
             inline_keyboard: [
                 [{ text: '🇺🇿 o’zbek tili', callback_data: 'menuHandler handleMenuAction uzbek' }],
                 [{ text: '🇷🇺 Русский', callback_data: 'menuHandler handleMenuAction russian' }]
             ]
         })  
     };
-    bot.sendMessage(chatId, 'Выберите язык:', options);
+    bot.sendMessage(chatId, i18n.__('choose_lang'), options);
 }
 
 module.exports = { displayLanguageOptions };

@@ -36,7 +36,7 @@ const { sendTariffSelection } = require('./tariffSelection');
 const commands = [
   {
       command: "start",
-      description: "Запуск бота"
+      description: i18n.__('lang_select')
   },
   {
       command: "connect",

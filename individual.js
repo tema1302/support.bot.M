@@ -85,23 +85,23 @@ async function handleCallbackQuery(bot, chatId, action, msg) {
               await proceedToNextStep(bot, chatId);
               break;
           case 'region_yakkasaray':
-              updateUserInfo(chatId, 'region', 'Яккасарайский район');
+              updateUserInfo(chatId, 'region', i18n.__('region_yakkasaray'));
               await proceedToNextStep(bot, chatId);
               break;
           case 'region_mirabad':
-              updateUserInfo(chatId, 'region', 'Мирабадский район');
+              updateUserInfo(chatId, 'region', i18n.__('region_mirabad'));
               await proceedToNextStep(bot, chatId);
               break;
           case 'region_sergeli':
-              updateUserInfo(chatId, 'region', 'Сергелийский район');
+              updateUserInfo(chatId, 'region', i18n.__('region_sergeli'));
               await proceedToNextStep(bot, chatId);
               break;
           case 'region_yangihayot':
-              updateUserInfo(chatId, 'region', 'Янгиҳаётский район');
+              updateUserInfo(chatId, 'region', i18n.__('region_yangihayot'));
               await proceedToNextStep(bot, chatId);
               break;
           case 'region_other':
-              updateUserInfo(chatId, 'region', 'Другой район');
+              updateUserInfo(chatId, 'region', i18n.__('region_other'));
               await proceedToNextStep(bot, chatId);
               break;
           case 'vip_0':
@@ -131,20 +131,20 @@ async function handleCallbackQuery(bot, chatId, action, msg) {
 
 async function sendTariffSelection(bot, chatId) {
   try {
-    await bot.sendMessage(chatId, 'Выберите тариф:', {
+    await bot.sendMessage(chatId, i18n.__('choose_tariff'), {
         reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'VIP 0 — 🌇20 и 🌃3 Мбит/с, 60т сум', callback_data: 'individual handleCallbackQuery vip_0' }],
-            [{ text: 'VIP 1 — 🌇100 и 🌃7 Мбит/с, 85т сум', callback_data: 'individual handleCallbackQuery vip_1' }],
-            [{ text: 'VIP 2 — 🌇100 и 🌃15 Мбит/с, 95т сум', callback_data: 'individual handleCallbackQuery vip_2' }],
-            [{ text: 'VIP 3 — 🌇100 и 🌃20 Мбит/с, 110т сум', callback_data: 'individual handleCallbackQuery vip_3' }],
-            [{ text: 'VIP 4 — 🌇100 и 🌃50 Мбит/с, 140т сум', callback_data: 'individual handleCallbackQuery vip_4' }],
-            [{ text: 'VIP 5 — 🌇100 и 🌃60 Мбит/с, 165т сум', callback_data: 'individual handleCallbackQuery vip_5' }],
-            [{ text: 'VIP 6 — 🌇100 и 🌃75 Мбит/с, 180т сум', callback_data: 'individual handleCallbackQuery vip_6' }],
-            [{ text: 'VIP 8 — 🌇100 и 🌃100 Мбит/с, 230т сум', callback_data: 'individual handleCallbackQuery vip_8' }],
-            [{ text: 'GT 1 — 🌇200 и 🌃50 Мбит/с, 165т сум', callback_data: 'individual handleCallbackQuery gt_1' }],
-            [{ text: 'GT 2 — 🌇200 и 🌃75 Мбит/с, 250т сум', callback_data: 'individual handleCallbackQuery gt_2' }],
-            [{ text: 'GT 3 — 🌇200 и 🌃100 Мбит/с, 300т сум', callback_data: 'individual handleCallbackQuery gt_3' }],
+            [{ text: i18n.__('tariff_vip_0'), callback_data: 'individual handleCallbackQuery vip_0' }],
+            [{ text: i18n.__('tariff_vip_1'), callback_data: 'individual handleCallbackQuery vip_1' }],
+            [{ text: i18n.__('tariff_vip_2'), callback_data: 'individual handleCallbackQuery vip_2' }],
+            [{ text: i18n.__('tariff_vip_3'), callback_data: 'individual handleCallbackQuery vip_3' }],
+            [{ text: i18n.__('tariff_vip_4'), callback_data: 'individual handleCallbackQuery vip_4' }],
+            [{ text: i18n.__('tariff_vip_5'), callback_data: 'individual handleCallbackQuery vip_5' }],
+            [{ text: i18n.__('tariff_vip_6'), callback_data: 'individual handleCallbackQuery vip_6' }],
+            [{ text: i18n.__('tariff_vip_8'), callback_data: 'individual handleCallbackQuery vip_8' }],
+            [{ text: i18n.__('tariff_gt_1'), callback_data: 'individual handleCallbackQuery gt_1' }],
+            [{ text: i18n.__('tariff_gt_2'), callback_data: 'individual handleCallbackQuery gt_2' }],
+            [{ text: i18n.__('tariff_gt_3'), callback_data: 'individual handleCallbackQuery gt_3' }],
           ]
         })
     });
@@ -196,14 +196,14 @@ const messageUserAndAdmins = (chatId, startMessage) => {
   const user = individualUserInfo[chatId];    
   let message = `${startMessage}:\n\n`;
   const fieldMapReverse = {
-      'region': 'Район',
-      'array_or_street': 'Квартал или улица',
-      'house_number': 'Номер дома',
-      'apartment_number': 'Номер квартиры',
-      'name': 'Имя',
-      'phone': 'Телефон',
-      'service': 'Услуга',
-      'tariff': 'Тариф'
+    'region': i18n.__('region'),
+    'array_or_street': i18n.__('array_or_street'),
+    'house_number': i18n.__('house_number'),
+    'apartment_number': i18n.__('apartment_number'),
+    'name': i18n.__('name'),
+    'phone': i18n.__('phone'),
+    'service': i18n.__('service'),
+    'tariff': i18n.__('tariff'),
   };
   const serviceLocalization = {
     'internet': i18n.__('internet'),
@@ -235,40 +235,40 @@ async function proceedToStep(bot, chatId, step) {
         menuHandler.displayConnectionOptions(bot, chatId);
         break;
       case Steps.AWAITING_NAME:
-        bot.sendMessage(chatId, 'Введите ваше имя.', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_your_name'), backButton());
         break;
       case Steps.AWAITING_SERVICE_SELECTION:
-        bot.sendMessage(chatId, 'Что вас интересует?', {
+        bot.sendMessage(chatId, i18n.__('what_interests_you'), {
         reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'Интернет', callback_data: 'individual handleCallbackQuery internet' }],
-            [{ text: 'Кабельное ТВ', callback_data: 'individual handleCallbackQuery cable-tv' }],
-            [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }]
+            [{ text: i18n.__('internet'), callback_data: 'individual handleCallbackQuery internet' }],
+            [{ text: i18n.__('cable-tv'), callback_data: 'individual handleCallbackQuery cable-tv' }],
+            [{ text: i18n.__('back'), callback_data: 'individual handleCallbackQuery go_back' }]
           ]
         })
       });
         break;
       case Steps.AWAITING_PHONE:
-        bot.sendMessage(chatId, 'Введите ваш контактный телефон.', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_your_phone'), backButton());
         break;
       case Steps.AWAITING_REGION_SELECTION:
         sendRegionSelection(bot, chatId);
         break;
       case Steps.AWAITING_STREET:
-        bot.sendMessage(chatId, 'Напишите ваш район или улицу. Например: Сергели-1', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_street_or_area'), backButton());
         break;
       case Steps.AWAITING_HOUSE_NUMBER:
-        bot.sendMessage(chatId, 'Введите номер дома.', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_house_number'), backButton());
         break;
       case Steps.AWAITING_APARTMENT_NUMBER:
-        bot.sendMessage(chatId, 'Введите номер квартиры.', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_apartment_number'), backButton());
         break;
       case Steps.AWAITING_TARIFF_SELECTION:
         sendTariffSelection(bot, chatId); 
         break;
       case Steps.CHECK_DATA:
         console.log('Steps.CHECK_DATA');
-        const startMessage = 'Проверьте ваши данные';
+        const startMessage = i18n.__('check_your_data');
         
         const messageU = messageUserAndAdmins(chatId, startMessage);
         console.log(messageU)
@@ -294,7 +294,7 @@ function backButton() {
   return {
     reply_markup: JSON.stringify({
       inline_keyboard: [
-      [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }],
+      [{ text: i18n.__('back'), callback_data: 'individual handleCallbackQuery go_back' }],
       ]
     })
   };
@@ -303,8 +303,8 @@ function backButton_withAgree() {
   return {
       reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: 'Да, все правильно', callback_data: 'individual handleCallbackQuery data_is_right' }],
-            [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }],
+            [{ text: i18n.__('agree_with_data'), callback_data: 'individual handleCallbackQuery data_is_right' }],
+            [{ text: i18n.__('back'), callback_data: 'individual handleCallbackQuery go_back' }],
           ]
       })
   };
@@ -332,15 +332,15 @@ function clearFutureSteps(chatId, currentStep) {
 
 async function sendRegionSelection(bot, chatId) {
   try {
-      await bot.sendMessage(chatId, 'Выберите ваш район:', {
+      await bot.sendMessage(chatId, i18n.__('choose_your_region'), {
           reply_markup: JSON.stringify({
               inline_keyboard: [
-                  [{ text: 'Яккасарайский район', callback_data: 'individual handleCallbackQuery region_yakkasaray' }],
-                  [{ text: 'Мирабадский район', callback_data: 'individual handleCallbackQuery region_mirabad' }],
-                  [{ text: 'Сергелийский район', callback_data: 'individual handleCallbackQuery region_sergeli' }],
-                  [{ text: 'Янгиҳаётский район', callback_data: 'individual handleCallbackQuery region_yangihayot' }],
-                  [{ text: 'Другой район', callback_data: 'individual handleCallbackQuery region_other' }],
-                  [{ text: 'Назад', callback_data: 'individual handleCallbackQuery go_back' }]
+                [{ text: i18n.__('region_yakkasaray'), callback_data: 'individual handleCallbackQuery region_yakkasaray' }],
+                [{ text: i18n.__('region_mirabad'), callback_data: 'individual handleCallbackQuery region_mirabad' }],
+                [{ text: i18n.__('region_sergeli'), callback_data: 'individual handleCallbackQuery region_sergeli' }],
+                [{ text: i18n.__('region_yangihayot'), callback_data: 'individual handleCallbackQuery region_yangihayot' }],
+                [{ text: i18n.__('region_other'), callback_data: 'individual handleCallbackQuery region_other' }],
+                [{ text: i18n.__('back'), callback_data: 'individual handleCallbackQuery go_back' }]
               ]
           })
       });

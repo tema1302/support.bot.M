@@ -39,7 +39,6 @@ function handleMenuAction(bot, chatId, action, msg) {
                 i18n.setLocale('uz');
                 menu.displayMenu(bot, chatId);
                 break;
-                // акции
             case 'back_to_promotions':
                 promotions.displayPromotions(bot, chatId);
                 break;
@@ -63,7 +62,6 @@ function handleMenuAction(bot, chatId, action, msg) {
 
 function displayConnectionOptions(bot, msgOrChatId) {
     try {
-        console.log('displayConnectionOptions');
         // Определение chatId в зависимости от типа переданного аргумента - перегрузка
         const chatId = typeof msgOrChatId === 'object' ? msgOrChatId.chat.id : msgOrChatId;
 
@@ -90,7 +88,7 @@ function handleUnsubscribe(bot, msg) {
     const chatId = msg.chat.id;
     // Здесь должна быть логика для отписки пользователя от бота
     // Например, удаление пользователя из базы данных подписчиков
-    bot.sendMessage(chatId, 'Вы отписались от бота. Чтобы подписаться снова, отправьте команду /start.');
+    bot.sendMessage(chatId, i18n.__('unsubscribe_success'));
 }
 function displayAboutInfo(bot, msg) {
     const chatId = msg.chat.id;
@@ -98,13 +96,11 @@ function displayAboutInfo(bot, msg) {
         parse_mode: 'HTML',
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
+                [{ text: i18n.__('back'), callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };
-    // Здесь должна быть логика для отписки пользователя от бота
-    // Например, удаление пользователя из базы данных подписчиков
-    bot.sendMessage(chatId, '<b>Кто мы</b>\n\n<b>Gals Telecom</b> подключает интернет в Ташкенте и кабельное телевидение с 2008 года. За это время выросли не только гигабиты скорости, но и возможности, которые мы предоставляем. Для частных клиентов — бесплатные цифровые ресурсы: доступ к музыке, кино, цифровому и IP-телевидению. Для корпоративных — индивидуальные тарифы под любые отрасли бизнеса, задачи и команды.\nМы поддерживаем высокую скорость и стабильное качество связи, чем бы вы не занимались.\n\n<b>Как мы это делаем</b>\n\nМы объединяем технологии и опыт, чтобы оперативно подключать новых клиентов и помогать тем, кто уже с нами. Мы отвечаем за качество интернета от монтажа и настройки оборудования до последующего сервиса и поддержки 24/7.\n<b>Наша миссия</b> — создавать условия для комфортной жизни и развития бизнеса за счёт внедрения цифровых технологий.\n\nМы ценим ваше время, поэтому всегда остаёмся на связи. Служба технической поддержки работает 24/7, в выходные и праздники. Позвоните, чтобы узнать больше о тарифах и бесплатных цифровых сервисах от интернет в Ташкенте <b>Gals Telecom</b>.', options);
+    bot.sendMessage(chatId, i18n.__('who_are_we'), options);
 }
 
 function handleChannelInfo(bot, msg) {
@@ -112,12 +108,12 @@ function handleChannelInfo(bot, msg) {
         parse_mode: 'HTML',
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
+                [{ text: i18n.__('back'), callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, 'Посетите наш телеграм-канал: https://t.me/galstelecom', options);
+    bot.sendMessage(chatId, i18n.__('visit_channel'), options);
 }
 
 module.exports = { handleMenuAction, handleUnsubscribe, handleChannelInfo, displayAboutInfo, displayConnectionOptions };

@@ -6,10 +6,10 @@ function displayPromotions(bot, chatId) {
     const options = {
         reply_markup: JSON.stringify({
             inline_keyboard: [
-                [{ text: 'Приведи друга 🤝', callback_data: 'menuHandler handleMenuAction bring_a_friend' }],
-                [{ text: 'Акция 300 💰', callback_data: 'menuHandler handleMenuAction promo_300' }],
-                [{ text: 'Кабель бесплатно 🆓', callback_data: 'menuHandler handleMenuAction free_cable' }],
-                [{ text: 'Назад', callback_data: 'menuHandler handleMenuAction back_to_menu' }]
+                [{ text: i18n.__('bring_a_friend_promotion'), callback_data: 'menuHandler handleMenuAction bring_a_friend' }],
+                [{ text: i18n.__('promo_300_promotion'), callback_data: 'menuHandler handleMenuAction promo_300' }],
+                [{ text: i18n.__('free_cable_promotion'), callback_data: 'menuHandler handleMenuAction free_cable' }],
+                [{ text: i18n.__('back_menu'), callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
         })
     };
@@ -25,32 +25,15 @@ function handlePromotionSelection(bot, chatId, action) {
   const promotions = {
     'bring_a_friend': {
       image: './assets/images/bring_a_friend_image.jpg',
-      text: `🤝 <b>“Приведи друга”</b>
-      
-Участвуйте в акции «Приведи друга» — это выгодно!\n
-Хотите получить бесплатный месяц интернета от «Gals Telecom»? У нас есть для вас отличная акция «Приведи друга». Просто следуйте этим простым шагам, чтобы воспользоваться этой возможностью.\n
-<b>Шаг 1:</b> Будьте абонентом «Gals Telecom»\n
-<b>Шаг 2:</b> Посоветуйте другу подключиться к нашему интернету\n
-<b>Шаг 3:</b> Обратитесь к нам по рекомендации\n
-<b>Шаг 4:</b> Получите бесплатный месяц интернета\n
-Не упустите возможность получить бесплатный месяц интернета с «Gals Telecom». Приведите друга к нам, и вы оба будете наслаждаться быстрым и надежным интернетом.\n
-      Количество друзей не ограничено.`
+      text: i18n.__('bring_a_friend_description')
     },
     'promo_300': {
       image: './assets/images/promo_300_image.jpg',
-      text: `💰 <b>Акция 300</b>
-
-При пополнении счета на 300 тыс.сум роутер предоставляется бесплатно.\n
-Если при подключении вы пополните счет на 300 тыс. сум, то роутер предоставляется бесплатно, а деньги со счета будут списываться в счет абонентской платы.\n
-Акция действует при тарифах от VIP 3 и выше.\n
-Детали можно уточнить по номеру: <code>+998712029666</code> `
+      text: i18n.__('promo_300_description')
     },
     'free_cable': {
       image: './assets/images/free_cable_image.jpg',
-      text: `🆓 <b>Кабель бесплатно</b>
-
-При подключении кабель предоставляется компанией бесплатно.\n
-При каждом подключении к сети интернет в нашей компании, мы предоставляем кабель бесплатно, независимо от длины кабеля от нашего оборудования до и внутри вашей квартиры.`
+      text: i18n.__('free_cable_description')
     }
   };
 
@@ -62,7 +45,7 @@ function handlePromotionSelection(bot, chatId, action) {
       parse_mode: "HTML",
       reply_markup: JSON.stringify({
         inline_keyboard: [
-          [{ text: 'Назад к акциям', callback_data: 'menuHandler handleMenuAction back_to_promotions' }]
+          [{ text: i18n.__('back_to_promotions'), callback_data: 'menuHandler handleMenuAction back_to_promotions' }]
         ]
       })
     });

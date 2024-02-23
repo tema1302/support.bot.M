@@ -65,7 +65,7 @@ function backButton() {
   return {
       reply_markup: JSON.stringify({
           inline_keyboard: [
-              [{ text: 'Назад', callback_data: 'company handleCallbackQuery go_back_company' }]
+              [{ text: i18n.__('back'), callback_data: 'company handleCallbackQuery go_back_company' }]
           ]
       })
   };
@@ -142,13 +142,13 @@ function proceedToStep(bot, chatId, step) {
           menuHandler.displayConnectionOptions(bot, chatId);
           break;
       case Steps.AWAITING_NAME:
-        bot.sendMessage(chatId, 'Введите название вашей компании:', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_company_name'), backButton());
         break;
       case Steps.AWAITING_PHONE:
-        bot.sendMessage(chatId, 'Введите номер телефона компании:', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_company_phone'), backButton());
         break;
       case Steps.AWAITING_ADDRESS:
-        bot.sendMessage(chatId, 'Введите адрес компании:', backButton());
+        bot.sendMessage(chatId, i18n.__('enter_company_address'), backButton());
         break;
       case Steps.MESSAGE_WAS_SENT:
         sendDataToAdmins(bot, chatId);
@@ -175,9 +175,9 @@ const messageUserAndAdmins = (chatId) => {
   const user = companyUserInfo[chatId];    
   let message = `🏙 Новая заявка на подключение услуг Юр. лица:\n\n`;
   const fieldMapReverse = {
-      'address': 'Адрес',
-      'name': 'Имя',
-      'phone': 'Телефон',
+      'address': i18n.__('company_address'),
+      'name': i18n.__('company_name'),
+      'phone': i18n.__('phone'),
   };
 
   for (const key in user) {
