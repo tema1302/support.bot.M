@@ -160,7 +160,7 @@ async function sendTariffSelection(bot, chatId) {
 async function proceedToNextStep(bot, chatId) {
   try {
     if (userStates[chatId] < Steps.MESSAGE_WAS_SENT) {
-      if (userStates[chatId] === Steps.AWAITING_APARTMENT_NUMBER && individualUserInfo[chatId]?.service === 'cable-tv') {
+      if (userStates[chatId] === Steps.AWAITING_APARTMENT_NUMBER && individualUserInfo[chatId].service === 'cable-tv') {
         userStates[chatId] = Steps.CHECK_DATA;
       } else {
         userStates[chatId]++;
@@ -178,7 +178,7 @@ async function proceedToPreviousStep(bot, chatId) {
   try {
     if (userStates[chatId] > Steps.IDLE) {
         clearFutureSteps(chatId, userStates[chatId]);
-        if (userStates[chatId] === Steps.CHECK_DATA && individualUserInfo[chatId]?.service === 'cable-tv') {
+        if (userStates[chatId] === Steps.CHECK_DATA && individualUserInfo[chatId].service === 'cable-tv') {
           userStates[chatId] = Steps.AWAITING_APARTMENT_NUMBER;
         } else {
           userStates[chatId]--;
