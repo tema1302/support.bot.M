@@ -359,10 +359,20 @@ function updateUserInfo(chatId, field, value) {
 }
 
 async function sendDataToAdmins(bot, chatId) {
-  // await bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
-  const startMessage = '🧑🏻‍🦲Новая заявка на подключение услуг Физ. лица';
-  const messageA = messageUserAndAdmins(chatId, startMessage);
-  await bot.sendMessage(GROUP_CHAT_ID, messageA);
+  const originalLocale = i18n.getLocale();
+    try {
+      i18n.setLocale('ru');
+      // await bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
+      const startMessage = '🧑🏻‍🦲Новая заявка на подключение услуг Физ. лица';
+      const messageA = messageUserAndAdmins(chatId, startMessage);
+      await bot.sendMessage(GROUP_CHAT_ID, messageA);
+    } catch (e) {
+      console.log("----------- ERROR -----------");
+      console.log(e);
+      console.log("----------- /ERROR -----------");
+  } finally {
+      i18n.setLocale(originalLocale);
+  }
 }
 
 module.exports = { individualUserInfo, handleUserInput, resetUserState, handleCallbackQuery, startConnectionScenario };

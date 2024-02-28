@@ -99,6 +99,5 @@
 	"tariff_gt_1_caption": "**GT 1 tarifi**\n\nInternet tezligida yangi chegaralar. GT yangi tariflar qatorida, tezlik 200 Mbit/s gacha ko‘tariladi. Chegaralarni bilmaydigan va cheklovlarni qo‘ymaydiganlar uchun.\n\n- Internet soat 00:00 dan 19:00 gacha - **200 Mbit/s**\n- Internet soat 19:00 dan 00:00 gacha - **50 Mbit/s**\n- Tas-IX - **100 Mbit/s** (Tas-IX tarmog‘iga kirish tezligi o‘zgarmaydi)\n- SMS Ogohlantirish\n\nTarif haqida batafsil: [https://gals.uz/tarifs/gt_1/](https://gals.uz/tarifs/gt_1/)",
 	"tariff_gt_2_caption": "**GT 2 tarifi**\n\nHayratda qoldiramiz. GT tariflar qatoridagi navbatdagi tarif, bu yerda tezlik 200 Mbit/s gacha ko‘tariladi, va minimal tezlik 75 Mbit/s gacha tushadi. Ajoyib, nima deyish mumkin…\n\n- Internet soat 00:00 dan 19:00 gacha - **200 Mbit/s**\n- Internet soat 19:00 dan 00:00 gacha - **75 Mbit/s**\n- Tas-IX - **100 Mbit/s** (Tas-IX tarmog‘iga kirish tezligi o‘zgarmaydi)\n- SMS Ogohlantirish\n\nTarif haqida batafsil: [https://gals.uz/tarifs/gt_2/](https://gals.uz/tarifs/gt_2/)",
 	"tariff_gt_3_caption": "**GT 3 tarifi**\n\nNahotki, tezroq bo‘lishi mumkin emas… Kompaniyamiz tariflari orasida eng tez tarif. Zavqlaning!\n\n- Internet soat 00:00 dan 19:00 gacha - **200 Mbit/s**\n- Internet soat 19:00 dan 00:00 gacha - **100 Mbit/s**\n- Tas-IX - **100 Mbit/s** (Tas-IX tarmog‘iga kirish tezligi o‘zgarmaydi)\n- SMS Ogohlantirish\n\nTarif haqida batafsil: [https://gals.uz/tarifs/gt_3/](https://gals.uz/tarifs/gt_3/)",
-	"region_other": "2",
-	"region_sergeli": "1"
+	"company_address": "Kompaniya manzili"
 }

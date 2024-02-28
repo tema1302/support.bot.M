@@ -351,7 +351,9 @@ function updateUserInfo(chatId, field, value) {
 }
 
 async function sendDataToAdmins(bot, chatId) {
+    const originalLocale = i18n.getLocale();
     try {
+        i18n.setLocale('ru');
         const startMessage = '🆘Новый запрос поддержки от пользователя';
         const messageA = messageUserAndAdmins(chatId, startMessage);
         await bot.sendMessage(GROUP_CHAT_ID, messageA);
@@ -359,6 +361,8 @@ async function sendDataToAdmins(bot, chatId) {
         console.log("----------- ERROR -----------");
         console.log(e);
         console.log("----------- /ERROR -----------");
+    } finally {
+        i18n.setLocale(originalLocale);
     }
 }
 
