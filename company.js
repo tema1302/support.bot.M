@@ -16,10 +16,9 @@ const Steps = {
   MESSAGE_WAS_SENT: 4,
 };
 
-let userStates = {}; // Хранит состояние для каждого пользователя
-let companyUserInfo = {}; // Глобальный объект для хранения информации о заявке юридического лица
+let userStates = {};
+let companyUserInfo = {};
 
-// Функция для начала сценария подключения услуг юридического лица
 async function startLegalEntityConnectionScenario(bot, chatId) {
   try {
     console.log('startLegalEntityConnectionScenario');
@@ -71,13 +70,10 @@ function backButton() {
   };
 }
 
-
-// Обработка выбора услуги
 async function handleCallbackQuery(bot, chatId, action, msg) {
   try {
     console.log(action);
     if (action === 'go_back_company') {
-      console.log('loggg go_back_company');
       await proceedToPreviousStep(bot, chatId);
     } else {
       switch (action) {
@@ -188,14 +184,11 @@ const messageUserAndAdmins = (chatId) => {
   return message;
 }
 
-
-// Обновление информации пользователя
 function updateUserInfo(chatId, field, value) {
   if (!companyUserInfo[chatId]) companyUserInfo[chatId] = {};
   companyUserInfo[chatId][field] = value;
 }
 
-// Отправка данных администраторам с учетом типа заявителя (юридическое лицо)
 async function sendDataToAdmins(bot, chatId) {
   const originalLocale = i18n.getLocale();
   try {
