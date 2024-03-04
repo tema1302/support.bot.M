@@ -13,8 +13,6 @@ const { logMessage } = require('./logger');
 
 
 function initialize(bot) {
-
-    
     bot.onText(/\/start/, async (msg) => {
         try {
             await languageHandler.displayLanguageOptions(bot, msg);
@@ -51,55 +49,6 @@ function initialize(bot) {
                 console.log(e);
                 console.log("----------- /ERROR -----------");
         }
-        // try {
-        //         const api_key = "65c8e816177eb:9cb0abd1ddc8a8f2dbcf78aa3cfcadc569f4dabb1084a25980910e97b35a4c60";
-        //         const response = await fetch('https://api.graspil.com/api/send-update', {
-        //         method: 'POST',
-        //         headers: {
-        //             "Api-Key": api_key,
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(msg),
-        //         });
-            
-        //         if (!response.ok) {
-        //         throw new Error(`Ошибка отправки данных в Graspil: ${response.statusText}`);
-        //         }
-            
-        //         console.log('Данные успешно отправлены в Graspil');
-        //         console.log(response);
-        //     } catch (error) {
-        //         console.error('Ошибка при отправке данных в Graspil:', error);
-        //     }
-
-
-            // const url = "https://api.graspil.com/api/send-update";
-            // // const api_key = "65c8e816177eb:9cb0abd1ddc8a8f2dbcf78aa3cfcadc569f4dabb1084a25980910e97b35a4c60";  // your API key
-            // const data = {
-            //     "ok": true,
-            //     "result": [
-            //         {
-            //         "update_id": 123,
-            //         "message": { /* детали сообщения */ }
-            //         }
-            //     ]
-            // };  // received data from telegram
-
-            // const headers = {
-            //     "Api-Key": api_key,
-            //     "Content-Type": "application/json"
-            // };
-            
-            // fetch(url, {
-            //     method: "POST",
-            //     headers: headers,
-            //     body: JSON.stringify(data)
-            // })
-            // .then(response => response.json())
-            // .then(data => {
-            //     // Обработка ответа
-            //     console.log(data);
-            // });
     });
     
     const myModules = { tariff: tariff, promotions: promotions, company: company, individual: individual, support: support, menuHandler: menuHandler, languageHandler: languageHandler, menu: menu, i18n: i18n, fetch: fetch, logMessage: logMessage}

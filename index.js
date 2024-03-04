@@ -3,35 +3,16 @@ const languageAndInit = require('./languageAndInit');
 const i18n = require('./config/i18n');
 
 const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M';
-const bot = new TelegramBot(token, { polling: true });
+const options = {
+  polling: true,
+  baseApiUrl: 'https://tgrasp.co' // ваш адрес
+};
+
+const bot = new TelegramBot(token, options);
 const menuHandler = require('./menuHandler');
 const support = require('./support');
 const promotions = require('./promotions');
 const { sendTariffSelection } = require('./tariffSelection');
-
-
-// const fetch = require('node-fetch');
-// const url = `https://api.telegram.org/bot${token}/getUpdates`;
-
-// async function getUpdates() {
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     console.log(data)
-//     if (data.ok) {
-//       console.log('Получены обновления:', data.result);
-//       return data.result
-//     } else {
-//       console.log('Ошибка при получении обновлений');
-//     }
-//   } catch (error) {
-//     console.error('Ошибка:', error);
-//   }
-// }
-
-// getUpdates();
-
-
 
 const commands = [
   {
