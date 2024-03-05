@@ -39,6 +39,8 @@ async function handleUserInput(bot, msg) {
     if (!userStates[chatId]) return;
 
     const text = msg.text;
+    logMessage('=== Юр лицо ===', text);
+
     switch (userStates[chatId]) {
       case Steps.AWAITING_NAME:
         updateUserInfo(chatId, 'name', text);

@@ -37,6 +37,7 @@ async function startConnectionScenario(bot, chatId) {
 async function handleUserInput(bot, msg) {
   const chatId = msg.chat.id;
   const text = msg.text;
+  logMessage('=== Физ лицо ===', text);
   try {
     if (!userStates[chatId]) return;
     

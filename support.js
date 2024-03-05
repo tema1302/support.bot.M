@@ -70,6 +70,7 @@ async function handleUserInput(bot, msg) {
         const text = msg.text;
         // выяснить, почему отображается после ввода квартиры, а не дома
         console.log('step 1111111', step);
+        logMessage('=== Поддержка ===', text);
 
         switch (userStates[chatId]) {
             case Steps.AWAITING_LOGIN:

@@ -22,8 +22,6 @@ function initialize(bot) {
             console.log("----------- /ERROR -----------");
         }
     });
-
-
     
     bot.on('message', async (msg) => {
         try {
@@ -32,13 +30,15 @@ function initialize(bot) {
             logMessage(username, `Получено сообщение: ${text}`);
 
             if (msg.text.startsWith('/')) {
-                console.log('startWith');
+                console.log('startWith /');
+                logMessage(username, `Сообщение начинается с /`);
                 // если сообщение начинается с /, то завершаем все сценарии
-                company.resetUserState(msg.chat.id);
-                individual.resetUserState(msg.chat.id);
+                // company.resetUserState(msg.chat.id);
+                // individual.resetUserState(msg.chat.id);
                 // разобраться, что не так
                 // support.clearFutureSteps(msg.chat.id, 1);
             } else {
+                logMessage(username, `Сообщение не начинается с /`);
                 support.handleUserInput(bot, msg);
                 individual.handleUserInput(bot, msg);
                 company.handleUserInput(bot, msg);
