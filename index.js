@@ -2,10 +2,11 @@ const TelegramBot = require('node-telegram-bot-api');
 const languageAndInit = require('./languageAndInit');
 const i18n = require('./config/i18n');
 
-const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M';
+// const token = '6336765125:AAGduWrAO6jW5HAUS5cqSeg7R0RbfAJOU7M'; // test
+const token = '251565029:AAErzJEJV-PY1TWxrenvFnEccrm4lt623_U'; // production
 const options = {
   polling: true,
-  baseApiUrl: 'https://tgrasp.co' // ваш адрес
+  baseApiUrl: 'https://tgrasp.co'
 };
 
 const bot = new TelegramBot(token, options);
@@ -81,6 +82,8 @@ try {
         console.log(`Команда ${command} не распознана.`);
     }
   });
+  
+  bot.on("polling_error", console.log);
   
   process.on('unhandledRejection', (reason) => {
     console.error('причина:', reason.response.body);
