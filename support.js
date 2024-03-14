@@ -357,7 +357,16 @@ async function sendDataToAdmins(bot, chatId) {
         i18n.setLocale('ru');
         const startMessage = '🆘Новый запрос поддержки от пользователя';
         const messageA = messageUserAndAdmins(chatId, startMessage);
-        await bot.sendMessage(GROUP_CHAT_ID, messageA);
+        const options = {
+            parse_mode: 'HTML',
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    [{ text: "Открыть чат с пользователем", url: `tg://user?id=${chatId}` }]
+                ]
+            })
+        };
+        await bot.sendMessage(GROUP_CHAT_ID, messageA, options);
+
     } catch (e) {
         console.log("----------- ERROR -----------");
         console.log(e);

@@ -366,7 +366,15 @@ async function sendDataToAdmins(bot, chatId) {
       // await bot.sendMessage(GROUP_CHAT_ID, message, { parse_mode: 'Markdown' });
       const startMessage = '🧑🏻‍🦲Новая заявка на подключение услуг Физ. лица';
       const messageA = messageUserAndAdmins(chatId, startMessage);
-      await bot.sendMessage(GROUP_CHAT_ID, messageA);
+      const options = {
+        parse_mode: 'HTML',
+        reply_markup: JSON.stringify({
+            inline_keyboard: [
+                [{ text: "Открыть чат с пользователем", url: `tg://user?id=${chatId}` }]
+            ]
+        })
+      };
+      await bot.sendMessage(GROUP_CHAT_ID, messageA, options);
     } catch (e) {
       console.log("----------- ERROR -----------");
       console.log(e);
