@@ -1,7 +1,7 @@
 const menuHandler = require('./menuHandler');
-const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183932329'; // test
 // const GROUP_CHAT_ID = '-4183415492'; // test test
-// const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
+const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const menu = require('./menu');
 const i18n = require('./config/i18n');
 

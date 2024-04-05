@@ -1,8 +1,8 @@
 let userStates = {}; // Хранит состояние для каждого пользователя
 let suppUserInfo = {}; // Глобальный объект для хранения информации о пользователе
-const GROUP_CHAT_ID = '-4183932329'; // test
+// const GROUP_CHAT_ID = '-4183932329'; // test
 // const GROUP_CHAT_ID = '-4183415492'; // test test
-// const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
+const GROUP_CHAT_ID = '-1002070610990'; // ID группового чата администраторов
 const { logMessage } = require('./logger');
 const i18n = require('./config/i18n');
 
