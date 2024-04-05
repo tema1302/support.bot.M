@@ -135,7 +135,7 @@ async function sendTariffSelection(bot, chatId) {
     await bot.sendMessage(chatId, i18n.__('choose_tariff'), {
         reply_markup: JSON.stringify({
           inline_keyboard: [
-            [{ text: i18n.__('tariff_vip_0'), callback_data: 'individual handleCallbackQuery vip_0' }],
+            // [{ text: i18n.__('tariff_vip_0'), callback_data: 'individual handleCallbackQuery vip_0' }],
             [{ text: i18n.__('tariff_vip_1'), callback_data: 'individual handleCallbackQuery vip_1' }],
             [{ text: i18n.__('tariff_vip_2'), callback_data: 'individual handleCallbackQuery vip_2' }],
             [{ text: i18n.__('tariff_vip_3'), callback_data: 'individual handleCallbackQuery vip_3' }],

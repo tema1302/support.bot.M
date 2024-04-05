@@ -14,7 +14,7 @@ const sendTariffSelection = (bot, chatId) => {
       bot.sendMessage(chatId, 'Выберите тариф:', {
           reply_markup: JSON.stringify({
               inline_keyboard: [
-                  [{ text: i18n.__('tariff_vip_0'), callback_data: 'tariff handleTariffSelection vip_0' }],
+                  // [{ text: i18n.__('tariff_vip_0'), callback_data: 'tariff handleTariffSelection vip_0' }],
                   [{ text: i18n.__('tariff_vip_1'), callback_data: 'tariff handleTariffSelection vip_1' }],
                   [{ text: i18n.__('tariff_vip_2'), callback_data: 'tariff handleTariffSelection vip_2' }],
                   [{ text: i18n.__('tariff_vip_3'), callback_data: 'tariff handleTariffSelection vip_3' }],
