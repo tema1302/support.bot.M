@@ -7,7 +7,8 @@ function displayPromotions(bot, chatId) {
         reply_markup: JSON.stringify({
             inline_keyboard: [
                 [{ text: i18n.__('bring_a_friend_promotion'), callback_data: 'menuHandler handleMenuAction bring_a_friend' }],
-                [{ text: i18n.__('promo_300_promotion'), callback_data: 'menuHandler handleMenuAction promo_300' }],
+                // [{ text: i18n.__('promo_300_promotion'), callback_data: 'menuHandler handleMenuAction promo_300' }],
+                // [{ text: i18n.__('wi_fi_internet'), callback_data: 'menuHandler handleMenuAction wi_fi_internet' }],
                 [{ text: i18n.__('free_cable_promotion'), callback_data: 'menuHandler handleMenuAction free_cable' }],
                 [{ text: i18n.__('back_menu'), callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]
@@ -30,6 +31,10 @@ function handlePromotionSelection(bot, chatId, action) {
     'promo_300': {
       image: './assets/images/promo_300_image.jpg',
       text: i18n.__('promo_300_description')
+    },
+    'wi_fi_internet': {
+      // image: './assets/images/wi_fi_internet_image.jpg',
+      text: i18n.__('wi_fi_internet_description')
     },
     'free_cable': {
       image: './assets/images/free_cable_image.jpg',

@@ -44,6 +44,7 @@ function handleMenuAction(bot, chatId, action, msg) {
                 break;
             case 'bring_a_friend':
             case 'promo_300':
+            case 'wi_fi_internet':
             case 'free_cable':
                 promotions.handlePromotionSelection(bot, chatId, action);
                 break;
