@@ -105,14 +105,34 @@ async function handleCallbackQuery(bot, chatId, action, msg) {
               updateUserInfo(chatId, 'region', i18n.__('region_other'));
               await proceedToNextStep(bot, chatId);
               break;
-          case 'vip_0':
           case 'vip_1':
+              updateUserInfo(chatId, 'tariff', 'Super 20');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_2':
+              updateUserInfo(chatId, 'tariff', 'Super 40');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_3':
+              updateUserInfo(chatId, 'tariff', 'Super 60');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_4':
+              updateUserInfo(chatId, 'tariff', 'Super 100');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_5':
+              updateUserInfo(chatId, 'tariff', 'Super 100+');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_6':
+              updateUserInfo(chatId, 'tariff', 'Super 200');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'vip_8':
+              updateUserInfo(chatId, 'tariff', 'Super 300');
+              await proceedToNextStep(bot, chatId);
+              break;
           case 'gt_1':
           case 'gt_2':
           case 'gt_3':
