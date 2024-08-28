@@ -8,7 +8,7 @@ function displayPromotions(bot, chatId) {
             inline_keyboard: [
                 [{ text: i18n.__('bring_a_friend_promotion'), callback_data: 'menuHandler handleMenuAction bring_a_friend' }],
                 // [{ text: i18n.__('promo_300_promotion'), callback_data: 'menuHandler handleMenuAction promo_300' }],
-                // [{ text: i18n.__('wi_fi_internet'), callback_data: 'menuHandler handleMenuAction wi_fi_internet' }],
+                [{ text: i18n.__('wi_fi_internet'), callback_data: 'menuHandler handleMenuAction wi_fi_internet' }],
                 [{ text: i18n.__('free_cable_promotion'), callback_data: 'menuHandler handleMenuAction free_cable' }],
                 [{ text: i18n.__('back_menu'), callback_data: 'menuHandler handleMenuAction back_to_menu' }]
             ]

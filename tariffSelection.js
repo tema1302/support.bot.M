@@ -22,9 +22,9 @@ const sendTariffSelection = (bot, chatId) => {
                   [{ text: i18n.__('tariff_vip_5'), callback_data: 'tariff handleTariffSelection vip_5' }],
                   [{ text: i18n.__('tariff_vip_6'), callback_data: 'tariff handleTariffSelection vip_6' }],
                   [{ text: i18n.__('tariff_vip_8'), callback_data: 'tariff handleTariffSelection vip_8' }],
-                  [{ text: i18n.__('tariff_gt_1'), callback_data: 'tariff handleTariffSelection gt_1' }],
-                  [{ text: i18n.__('tariff_gt_2'), callback_data: 'tariff handleTariffSelection gt_2' }],
-                  [{ text: i18n.__('tariff_gt_3'), callback_data: 'tariff handleTariffSelection gt_3' }],
+                  // [{ text: i18n.__('tariff_gt_1'), callback_data: 'tariff handleTariffSelection gt_1' }],
+                  // [{ text: i18n.__('tariff_gt_2'), callback_data: 'tariff handleTariffSelection gt_2' }],
+                  // [{ text: i18n.__('tariff_gt_3'), callback_data: 'tariff handleTariffSelection gt_3' }],
               ]
           })
       });
@@ -89,7 +89,7 @@ const handleTariffSelection = (bot, chatId, action, msg) => {
       return;
   }
 
-  bot.sendPhoto(chatId, photo, { caption: caption, parse_mode: 'Markdown', ...backButton() });
+  bot.sendPhoto(chatId, { caption: caption, parse_mode: 'Markdown', ...backButton() });
 };
 
 

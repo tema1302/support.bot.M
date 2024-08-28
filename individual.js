@@ -143,9 +143,9 @@ async function sendTariffSelection(bot, chatId) {
             [{ text: i18n.__('tariff_vip_5'), callback_data: 'individual handleCallbackQuery vip_5' }],
             [{ text: i18n.__('tariff_vip_6'), callback_data: 'individual handleCallbackQuery vip_6' }],
             [{ text: i18n.__('tariff_vip_8'), callback_data: 'individual handleCallbackQuery vip_8' }],
-            [{ text: i18n.__('tariff_gt_1'), callback_data: 'individual handleCallbackQuery gt_1' }],
-            [{ text: i18n.__('tariff_gt_2'), callback_data: 'individual handleCallbackQuery gt_2' }],
-            [{ text: i18n.__('tariff_gt_3'), callback_data: 'individual handleCallbackQuery gt_3' }],
+            // [{ text: i18n.__('tariff_gt_1'), callback_data: 'individual handleCallbackQuery gt_1' }],
+            // [{ text: i18n.__('tariff_gt_2'), callback_data: 'individual handleCallbackQuery gt_2' }],
+            // [{ text: i18n.__('tariff_gt_3'), callback_data: 'individual handleCallbackQuery gt_3' }],
           ]
         })
     });
