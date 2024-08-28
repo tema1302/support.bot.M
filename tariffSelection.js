@@ -89,7 +89,7 @@ const handleTariffSelection = (bot, chatId, action, msg) => {
       return;
   }
 
-  bot.sendMessage(chatId, { caption: caption, parse_mode: 'Markdown', ...backButton() });
+  bot.sendMessage(chatId, caption, { parse_mode: 'Markdown', ...backButton() });
 };
 
 
